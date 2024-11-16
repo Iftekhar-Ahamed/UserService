@@ -23,8 +23,20 @@ public  class ExceptionMiddleware
             ApiResponseDto<string> errorResponse = new ApiResponseDto<string>
             {
                 Data = null,
-                Message = e.Message,
-                ShowMessage = false
+                Message = "Something went wrong",
+                ShowMessage = false,
+                Error = new ErrorResponseDto
+                {
+                    Title = "Something went wrong",
+                    ErrorDetails = 
+                    [
+                        new ErrorDescriptionDto
+                        {
+                            Key = "System.Exception",
+                            Value = e.Message
+                        }
+                    ]
+                }
             };
             
             string content = JsonConvertHelper.ConvertJsonString(errorResponse);

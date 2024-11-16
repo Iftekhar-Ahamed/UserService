@@ -25,7 +25,7 @@ namespace UserService.Controllers
                 Message = "Successfully Created User",
                 Success = true
             };
-
+            
             return Ok(response);
         }
 
