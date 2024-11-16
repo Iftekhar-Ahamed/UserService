@@ -1,3 +1,4 @@
+using Application.DTOs.APIRequestResponseDTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -8,6 +9,12 @@ namespace UserService.ActionFilters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            ErrorResponseDto errorResponse = new ErrorResponseDto
+            {
+                Title = "Model Validation Failed",
+                Errors = new List<(string Type,string Message)>{ ("Test","Test")},
+            };
+            
             foreach (var argument in context.ActionArguments.Values)
             {
                 if (argument != null)
@@ -18,17 +25,23 @@ namespace UserService.ActionFilters
                     if (validator != null)
                     {
                         var validationResult = validator.Validate(new ValidationContext<object>(argument));
+                        
                         if (!validationResult.IsValid)
                         {
-                            context.Result = new BadRequestObjectResult(validationResult.Errors.Select(e => new
-                            {
-                                Property = e.PropertyName,
-                                Error = e.ErrorMessage
-                            }));
-                            return;
+                            errorResponse.Errors.AddRange(
+                                validationResult.Errors
+                                    .Select(e => (Type: e.PropertyName, Message: e.ErrorMessage))
+                                    .ToList()
+                            );
                         }
                     }
                 }
+            }
+
+            if (errorResponse.Errors.Any())
+            {
+                context.Result = new BadRequestObjectResult(errorResponse);
+                return;
             }
             base.OnActionExecuting(context);
         }

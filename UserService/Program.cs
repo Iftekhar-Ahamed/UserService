@@ -1,27 +1,21 @@
-using UserService.ActionFilters;
 using UserService.Middlewares;
+using UserService.ServiceConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<ValidateModelAttribute>();
-});
-builder.Services.ConfigureServices();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.ConfigureAllServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();

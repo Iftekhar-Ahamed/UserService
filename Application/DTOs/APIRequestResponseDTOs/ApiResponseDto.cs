@@ -7,4 +7,5 @@ public class ApiResponseDto<T>
     public bool Success { get; set; } = false;
     public bool ShowMessage { get; set; } = false;
     public Dictionary<string, string>? Values { get; set; }
+    public ErrorResponseDto? Error { get; set; }
 }
