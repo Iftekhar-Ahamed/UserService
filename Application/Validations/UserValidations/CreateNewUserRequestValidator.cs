@@ -18,7 +18,7 @@ public class CreateNewUserRequestValidator : AbstractValidator<CreateNewUserRequ
             .NotEmpty().WithMessage("Email is required.")
             .EmailAddress().WithMessage("Email is not valid.");
 
-        RuleFor(x => x.ContactNUmberCountryCode)
+        RuleFor(x => x.ContactNumberCountryCode)
             .NotEmpty().WithMessage("Country code is required.")
             .Matches(@"^\+\d+$").WithMessage("Country code must be in the format '+<digits>'.");
 

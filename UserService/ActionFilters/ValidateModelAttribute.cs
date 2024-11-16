@@ -11,8 +11,8 @@ namespace UserService.ActionFilters
         {
             ErrorResponseDto errorResponse = new ErrorResponseDto
             {
-                Title = "Model Validation Failed",
-                Errors = new List<(string Type,string Message)>{ ("Test","Test")},
+                Title = "Error with requested parameters",
+                ErrorDetails = new(),
             };
             
             foreach (var argument in context.ActionArguments.Values)
@@ -28,22 +28,34 @@ namespace UserService.ActionFilters
                         
                         if (!validationResult.IsValid)
                         {
-                            errorResponse.Errors.AddRange(
+                            errorResponse.ErrorDetails.AddRange(
                                 validationResult.Errors
-                                    .Select(e => (Type: e.PropertyName, Message: e.ErrorMessage))
-                                    .ToList()
+                                    .Select(e => new ErrorDescriptionDto
+                                    {
+                                      Key  = e.PropertyName,
+                                      Value = e.ErrorMessage
+                                    }).ToList()
                             );
                         }
                     }
                 }
             }
 
-            if (errorResponse.Errors.Any())
+            if (errorResponse.ErrorDetails.Any())
             {
-                context.Result = new BadRequestObjectResult(errorResponse);
-                return;
+                ApiResponseDto<string> response = new ApiResponseDto<string>
+                {
+                    Success = false,
+                    Message = "Validation failed",
+                    Error = errorResponse
+                };
+                
+                context.Result = new BadRequestObjectResult(response);
             }
-            base.OnActionExecuting(context);
+            else
+            {
+                base.OnActionExecuting(context);
+            }
         }
     }
 }
