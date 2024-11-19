@@ -1,5 +1,5 @@
-using Application.DTOs.APIRequestResponseDTOs;
 using Application.DTOs.UserDTOs;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using UserService.ActionFilters;
 
@@ -7,26 +7,20 @@ namespace UserService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController(IUserInfoService userInfoService) : ControllerBase
     {
-
-        public UserController()
-        {
-
-        }
-
         [HttpPost("CreateUser")]
         [ValidateModel]
-        public IActionResult CreateNewUser([FromBody]CreateNewUserRequestDto createNewUserRequest)
+        public async Task<IActionResult> CreateNewUser([FromBody]CreateNewUserRequestDto createNewUserRequest)
         {
-            ApiResponseDto<string> response = new ApiResponseDto<string>
-            {
-                Data = null,
-                Message = "Successfully Created User",
-                Success = true
-            };
+            var response = await userInfoService.CreateNewUserAsync(createNewUserRequest);
             
-            return Ok(response);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            
+            return BadRequest(response);
         }
 
     }
