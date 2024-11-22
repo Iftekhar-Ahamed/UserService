@@ -11,8 +11,8 @@ public class CreateNewUserRequestValidator : AbstractValidator<CreateNewUserRequ
             .NotNull().WithMessage("Name is required.");
 
         RuleFor(x => x.Dob)
-            .LessThan(DateTime.Now).WithMessage("Date of birth must be in the past.")
-            .GreaterThan(DateTime.Now.AddYears(-120)).WithMessage("Date of birth must be within a realistic range.");
+            .LessThan(DateOnly.FromDateTime(DateTime.Now)).WithMessage("Date of birth must be in the past.")
+            .GreaterThan(DateOnly.FromDateTime(DateTime.Now.AddYears(-120))).WithMessage("Date of birth must be within a realistic range.");
 
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")

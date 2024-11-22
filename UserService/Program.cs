@@ -3,7 +3,7 @@ using UserService.ServiceConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfigureAllServices();
+builder.Services.ConfigureAllServices(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

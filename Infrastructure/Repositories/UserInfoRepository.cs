@@ -1,11 +1,15 @@
 using Domain.Interfaces;
+using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class UserInfoRepository : IUserInfoRepository
+public class UserInfoRepository(ChatDbContext chatDbContext) : IUserInfoRepository
 {
-    public Task<bool> AddUserAsync()
+    public async Task<bool> AddUserAsync(TblUserInformation user)
     {
-        throw new NotImplementedException();
+        var data = await chatDbContext.TblUserInformations.Select(x => x).ToListAsync();
+        var response = await chatDbContext.TblUserInformations.AddAsync(user);
+        return true;
     }
 }
