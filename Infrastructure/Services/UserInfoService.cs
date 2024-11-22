@@ -1,5 +1,6 @@
 using Application.DTOs.APIRequestResponseDTOs;
 using Application.DTOs.UserDTOs;
+using Application.Extensions.DtoExtensions;
 using Application.Interfaces;
 using Domain.Interfaces;
 using Domain.Models;
@@ -14,8 +15,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
 
         if (await userInfoRepository.IsDuplicateUserAsync(userInfo.Email))
         {
-            response.Message = "User already exists!";
-            response.Success = false;
+            response.Failed("User already exists with provided email",true);
         }
         else
         {
@@ -35,12 +35,11 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
 
             if (await userInfoRepository.AddUserAsync(user))
             {
-                response.Message = "Successfully User Created!";
-                response.Success = true;
+                response.Success("Successfully User Created!",true);
             }
             else
             {
-                throw new ApplicationException("Failed to save user!");
+                response.Failed("Please Try Again!",true);
             }
         }
         

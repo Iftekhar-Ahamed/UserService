@@ -3,20 +3,13 @@ using Application.Helpers.BasicDataHelpers;
 
 namespace UserService.Middlewares;
 
-public  class ExceptionMiddleware
+public class ExceptionMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-    
-    public ExceptionMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
     public async Task InvokeAsync(HttpContext httpContext)
     {
         try
         {
-            await _next(httpContext);
+            await next(httpContext);
         }
         catch (Exception e)
         {
