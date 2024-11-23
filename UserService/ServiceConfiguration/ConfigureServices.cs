@@ -1,3 +1,4 @@
+using Application.DTOs.UserDTOs;
 using Application.Interfaces;
 using Application.Validations.UserValidations;
 using Domain.Interfaces;
@@ -16,6 +17,8 @@ public static class ConfigureServices
     {
         services.AddControllers(options => { options.Filters.Add<ValidateModelAttribute>(); });
         services.AddValidatorsFromAssemblyContaining<CreateNewUserRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<LogInRequestDto>();
+        
         services.AddDbContext<ChatDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
