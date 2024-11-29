@@ -46,4 +46,9 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
         
         return response;
     }
+
+    public Task<ApiResponseDto<bool>> UpdateUserAsync(UpdateUserRequestDto updateUserInfo)
+    {
+        throw new NotImplementedException();
+    }
 }

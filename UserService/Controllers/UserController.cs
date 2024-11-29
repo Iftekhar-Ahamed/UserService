@@ -25,9 +25,9 @@ namespace UserService.Controllers
         
         [HttpPost("UpdateUser")]
         [ValidateModel]
-        public async Task<IActionResult> UpdateUser([FromBody]CreateNewUserRequestDto createNewUserRequest)
+        public async Task<IActionResult> UpdateUser([FromBody]UpdateUserRequestDto updateUserRequest)
         {
-            var response = await userInfoService.CreateNewUserAsync(userInfo: createNewUserRequest);
+            var response = await userInfoService.UpdateUserAsync(updateUserInfo: updateUserRequest);
             
             if (response.Success)
             {
@@ -36,7 +36,6 @@ namespace UserService.Controllers
             
             return BadRequest(response);
         }
-
 
     }
 }
