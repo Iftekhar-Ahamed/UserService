@@ -24,6 +24,8 @@ public static class ConfigureServices
 
         services.AddScoped<IUserInfoService, UserInfoService>();
         services.AddScoped<IUserInfoRepository, UserInfoRepository>();
+        
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

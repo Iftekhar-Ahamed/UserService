@@ -13,7 +13,7 @@ namespace UserService.Controllers
         [ValidateModel]
         public async Task<IActionResult> CreateNewUser([FromBody]CreateNewUserRequestDto createNewUserRequest)
         {
-            var response = await userInfoService.CreateNewUserAsync(createNewUserRequest);
+            var response = await userInfoService.CreateNewUserAsync(userInfo: createNewUserRequest);
             
             if (response.Success)
             {
@@ -22,6 +22,21 @@ namespace UserService.Controllers
             
             return BadRequest(response);
         }
+        
+        [HttpPost("UpdateUser")]
+        [ValidateModel]
+        public async Task<IActionResult> UpdateUser([FromBody]CreateNewUserRequestDto createNewUserRequest)
+        {
+            var response = await userInfoService.CreateNewUserAsync(userInfo: createNewUserRequest);
+            
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            
+            return BadRequest(response);
+        }
+
 
     }
 }

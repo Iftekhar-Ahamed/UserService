@@ -1,8 +1,11 @@
-﻿namespace Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Models;
 
 public partial class TblUserInformation
 {
-    public long UserId { get; set; }
+    public int UserId { get; set; }
 
     public string Title { get; set; } = null!;
 
@@ -19,6 +22,8 @@ public partial class TblUserInformation
     public string ContactNumberCountryCode { get; set; } = null!;
 
     public string ContactNumber { get; set; } = null!;
+
+    public string? Password { get; set; }
 
     public bool IsActive { get; set; }
 

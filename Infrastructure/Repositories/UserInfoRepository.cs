@@ -21,4 +21,12 @@ public class UserInfoRepository(ChatDbContext chatDbContext) : IUserInfoReposito
         
         return matchedResult != null;
     }
+
+    public async Task<TblUserInformation?> GetUserByEmailAsync(string email)
+    {
+        var matchedResult = await chatDbContext.TblUserInformations.FirstOrDefaultAsync
+            (user => user.Email == email);
+
+        return matchedResult;
+    }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Models;
 
@@ -23,11 +25,10 @@ public partial class ChatDbContext : DbContext
     {
         modelBuilder.Entity<TblUserInformation>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("tbluserinformation_pkey");
+            entity.HasKey(e => e.UserId).HasName("TblUserInformation_pkey");
 
             entity.ToTable("TblUserInformation");
 
-            entity.Property(e => e.UserId).HasDefaultValueSql("nextval('tbluserinformation_userid_seq'::regclass)");
             entity.Property(e => e.ContactNumber).HasMaxLength(15);
             entity.Property(e => e.ContactNumberCountryCode).HasMaxLength(3);
             entity.Property(e => e.CreationDateTime).HasColumnType("timestamp without time zone");
@@ -36,6 +37,7 @@ public partial class ChatDbContext : DbContext
             entity.Property(e => e.LastModifiedDateTime).HasColumnType("timestamp without time zone");
             entity.Property(e => e.LastName).HasMaxLength(50);
             entity.Property(e => e.MiddleName).HasMaxLength(50);
+            entity.Property(e => e.Password).HasMaxLength(100);
             entity.Property(e => e.Title).HasMaxLength(5);
         });
 

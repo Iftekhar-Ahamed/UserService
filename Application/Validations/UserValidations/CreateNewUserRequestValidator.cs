@@ -27,5 +27,12 @@ public class CreateNewUserRequestValidator : AbstractValidator<CreateNewUserRequ
             .Matches(@"^\d+$").WithMessage("Contact number must only contain digits.")
             .MinimumLength(7).WithMessage("Contact number must be at least 7 digits.")
             .MaximumLength(15).WithMessage("Contact number must not exceed 15 digits.");
+        
+        RuleFor(x => x.Password)
+            .NotEmpty().WithMessage("Password is required")
+            .MinimumLength(8).WithMessage("Password must be at least 8 characters")
+            .MaximumLength(100).WithMessage("Password must be between 8 and 100 characters")
+            .Matches(@"[!@#$%^&*(),.?""':{}|<>]").WithMessage("Password must contain at least one special character")
+            .Matches(@"[0123456789]").WithMessage("Password must contain at least one number");
     }
 }

@@ -13,13 +13,13 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
     {
         var response = new ApiResponseDto<bool>{ Message = "Something went wrong",ShowMessage = true };
 
-        if (await userInfoRepository.IsDuplicateUserAsync(userInfo.Email))
+        if (await userInfoRepository.IsDuplicateUserAsync(email: userInfo.Email))
         {
             response.Failed("User already exists with provided email",true);
         }
         else
         {
-            TblUserInformation user = new TblUserInformation
+            TblUserInformation newUser = new TblUserInformation
             {
                 Title = userInfo.Name.Title,
                 FirstName = userInfo.Name.FirstName,
@@ -27,13 +27,14 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
                 LastName = userInfo.Name.LastName,
                 Dob = userInfo.Dob,
                 Email = userInfo.Email,
+                Password = userInfo.Password,
                 ContactNumberCountryCode = userInfo.ContactNumberCountryCode,
                 ContactNumber = userInfo.ContactNumber,
                 IsActive = true,
                 CreationDateTime = DateTime.Now
             };
 
-            if (await userInfoRepository.AddUserAsync(user))
+            if (await userInfoRepository.AddUserAsync(user: newUser))
             {
                 response.Success("Successfully User Created!",true);
             }

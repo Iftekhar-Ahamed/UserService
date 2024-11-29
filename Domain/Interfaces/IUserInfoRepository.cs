@@ -6,4 +6,5 @@ public interface IUserInfoRepository
 {
     Task<bool> AddUserAsync(TblUserInformation user);
     Task<bool> IsDuplicateUserAsync(string? email);
+    Task<TblUserInformation?> GetUserByEmailAsync(string email); 
 }
