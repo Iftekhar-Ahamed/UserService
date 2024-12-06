@@ -29,4 +29,19 @@ public class UserInfoRepository(ChatDbContext chatDbContext) : IUserInfoReposito
 
         return matchedResult;
     }
+    
+    public async Task<TblUserInformation?> GetUserByIdAsync(int userId)
+    {
+        var matchedResult = await chatDbContext.TblUserInformations.FirstOrDefaultAsync
+            (user => user.UserId == userId);
+
+        return matchedResult;
+    }
+
+    public async Task<bool> UpdateUserAsync(TblUserInformation userInfo)
+    {
+        var result = chatDbContext.TblUserInformations.Update(userInfo);
+
+        return await chatDbContext.SaveChangesAsync() == 1;
+    }
 }
