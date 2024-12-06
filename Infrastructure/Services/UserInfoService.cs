@@ -61,23 +61,20 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
             return response;
         }
 
-        var updateUserModel = new TblUserInformation
-        {
-            Title = updateUserInfo.Name?.Title ?? exitingInformationUser.Title,
-            FirstName = updateUserInfo.Name?.FirstName ?? exitingInformationUser.FirstName,
-            MiddleName = updateUserInfo.Name?.MiddleName ?? exitingInformationUser.MiddleName,
-            LastName = updateUserInfo.Name?.LastName ?? exitingInformationUser.LastName,
-            Dob = updateUserInfo.Dob ?? exitingInformationUser.Dob,
-            Email = updateUserInfo.Email ?? exitingInformationUser.Email,
-            ContactNumberCountryCode = updateUserInfo.ContactNumberCountryCode ?? exitingInformationUser.ContactNumberCountryCode,
-            ContactNumber = updateUserInfo.ContactNumber ?? exitingInformationUser.ContactNumber,
-            Password = updateUserInfo.Password ?? exitingInformationUser.Password,
-            IsActive = updateUserInfo.IsActive ?? exitingInformationUser.IsActive,
-            CreationDateTime = exitingInformationUser.CreationDateTime,
-            LastModifiedDateTime = DateTime.Now
-        };
+        exitingInformationUser.Title = updateUserInfo.Name?.Title ?? exitingInformationUser.Title;
+        exitingInformationUser.FirstName = updateUserInfo.Name?.FirstName ?? exitingInformationUser.FirstName;
+        exitingInformationUser.MiddleName = updateUserInfo.Name?.MiddleName ?? exitingInformationUser.MiddleName;
+        exitingInformationUser.LastName = updateUserInfo.Name?.LastName ?? exitingInformationUser.LastName;
+        exitingInformationUser.Dob = updateUserInfo.Dob ?? exitingInformationUser.Dob;
+        exitingInformationUser.Email = updateUserInfo.Email ?? exitingInformationUser.Email;
+        exitingInformationUser.ContactNumberCountryCode = updateUserInfo.ContactNumberCountryCode ??
+                                                          exitingInformationUser.ContactNumberCountryCode;
+        exitingInformationUser.ContactNumber = updateUserInfo.ContactNumber ?? exitingInformationUser.ContactNumber;
+        exitingInformationUser.Password = updateUserInfo.Password ?? exitingInformationUser.Password;
+        exitingInformationUser.IsActive = updateUserInfo.IsActive ?? exitingInformationUser.IsActive;
+        exitingInformationUser.LastModifiedDateTime = DateTime.Now;
 
-        if (await userInfoRepository.UpdateUserAsync(updateUserModel))
+        if (await userInfoRepository.UpdateUserAsync(exitingInformationUser))
         {
             response.Success("Successfully Updated User!", true);
         }
@@ -89,9 +86,9 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
         return response;
     }
 
-    public async Task<ApiResponseDto<UserInformationDto>> GetUserInformationByIdAsync(int userId)
+    public async Task<ApiResponseDto<GetUserInformationByIdResponseDto>> GetUserInformationByIdAsync(int userId)
     {
-        var response = new ApiResponseDto<UserInformationDto>();
+        var response = new ApiResponseDto<GetUserInformationByIdResponseDto>();
         
         var userInformation = await userInfoRepository.GetUserByIdAsync(userId);
 
@@ -103,9 +100,21 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
         else
         {
             response.Success("Successfully Retrieved User!",true);
-            response.Data = new UserInformationDto
+            response.Data = new GetUserInformationByIdResponseDto
             {
-                
+                UserId = userInformation.UserId,
+                Name = new NameElementDto
+                {
+                    Title = userInformation.Title,
+                    FirstName = userInformation.FirstName,
+                    MiddleName = userInformation.MiddleName,
+                    LastName = userInformation.LastName,
+                },
+                Dob = userInformation.Dob,
+                Email = userInformation.Email,
+                ContactNumberCountryCode = userInformation.ContactNumberCountryCode,
+                ContactNumber = userInformation.ContactNumber,
+                IsActive = userInformation.IsActive
             };
             
         }

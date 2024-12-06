@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Application.DTOs.UserDTOs;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,20 @@ namespace UserService.Controllers
         public async Task<IActionResult> UpdateUser([FromBody]UpdateUserRequestDto updateUserRequest)
         {
             var response = await userInfoService.UpdateUserAsync(updateUserInfo: updateUserRequest);
+            
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            
+            return BadRequest(response);
+        }
+        
+        [HttpGet("GetUser")]
+        [ValidateModel]
+        public async Task<IActionResult> GetUserById(int userId)
+        {
+            var response = await userInfoService.GetUserInformationByIdAsync(userId: userId);
             
             if (response.Success)
             {
