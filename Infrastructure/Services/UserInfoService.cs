@@ -1,6 +1,7 @@
 using Application.DTOs.APIRequestResponseDTOs;
 using Application.DTOs.UserDTOs;
 using Application.Extensions.DtoExtensions;
+using Application.Helpers.EncryptionDecryptionHelper;
 using Application.Interfaces;
 using Domain.Interfaces;
 using Domain.Models;
@@ -27,7 +28,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
                 LastName = userInfo.Name.LastName,
                 Dob = userInfo.Dob,
                 Email = userInfo.Email,
-                Password = userInfo.Password,
+                Password = OneWayEncryptionHelper.HashPassword(userInfo.Password),
                 ContactNumberCountryCode = userInfo.ContactNumberCountryCode,
                 ContactNumber = userInfo.ContactNumber,
                 IsActive = true,
@@ -70,7 +71,9 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
         exitingInformationUser.ContactNumberCountryCode = updateUserInfo.ContactNumberCountryCode ??
                                                           exitingInformationUser.ContactNumberCountryCode;
         exitingInformationUser.ContactNumber = updateUserInfo.ContactNumber ?? exitingInformationUser.ContactNumber;
-        exitingInformationUser.Password = updateUserInfo.Password ?? exitingInformationUser.Password;
+        exitingInformationUser.Password = updateUserInfo.Password == null
+            ? exitingInformationUser.Password
+            : OneWayEncryptionHelper.HashPassword(updateUserInfo.Password);
         exitingInformationUser.IsActive = updateUserInfo.IsActive ?? exitingInformationUser.IsActive;
         exitingInformationUser.LastModifiedDateTime = DateTime.Now;
 
