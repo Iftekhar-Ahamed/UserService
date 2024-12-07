@@ -14,14 +14,26 @@ public static class OneWayEncryptionHelper
         return Convert.ToBase64String(saltBytes);
     }
     
-    public static string HashPassword(string password)
+    public static string EncryptPassword(string password, string? salt = null)
     {
-        var salt = GenerateSalt();
+        salt ??= GenerateSalt();
         using var sha256 = SHA256.Create();
         
         var combinedBytes = Encoding.UTF8.GetBytes(password + salt);
-        var hashBytes = sha256.ComputeHash(combinedBytes);
+        var hashPassword = Convert.ToBase64String(sha256.ComputeHash(combinedBytes));
         
-        return Convert.ToBase64String(hashBytes);
+        string encryptedPassword = Convert.ToBase64String(Encoding.UTF8.GetBytes(salt + hashPassword));
+        
+        return encryptedPassword;
+    }
+    
+    public static bool IsValidPassword(string givenPassword, string password)
+    {
+        string decodedPassword = Encoding.UTF8.GetString(Convert.FromBase64String(password));
+        
+        var salt = decodedPassword[..24];
+        string encryptedPassword = EncryptPassword(givenPassword, salt);
+        
+        return encryptedPassword == password;
     }
 }

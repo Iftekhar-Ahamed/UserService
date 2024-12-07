@@ -28,7 +28,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
                 LastName = userInfo.Name.LastName,
                 Dob = userInfo.Dob,
                 Email = userInfo.Email,
-                Password = OneWayEncryptionHelper.HashPassword(userInfo.Password),
+                Password = OneWayEncryptionHelper.EncryptPassword(userInfo.Password),
                 ContactNumberCountryCode = userInfo.ContactNumberCountryCode,
                 ContactNumber = userInfo.ContactNumber,
                 IsActive = true,
@@ -73,7 +73,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
         exitingInformationUser.ContactNumber = updateUserInfo.ContactNumber ?? exitingInformationUser.ContactNumber;
         exitingInformationUser.Password = updateUserInfo.Password == null
             ? exitingInformationUser.Password
-            : OneWayEncryptionHelper.HashPassword(updateUserInfo.Password);
+            : OneWayEncryptionHelper.EncryptPassword(updateUserInfo.Password);
         exitingInformationUser.IsActive = updateUserInfo.IsActive ?? exitingInformationUser.IsActive;
         exitingInformationUser.LastModifiedDateTime = DateTime.Now;
 
