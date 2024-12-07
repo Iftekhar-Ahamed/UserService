@@ -36,7 +36,7 @@ public class UpdateUserRequestValidator: AbstractValidator<UpdateUserRequestDto>
         
         RuleFor(x => x.Password)
             .MinimumLength(8).WithMessage("Password must be at least 8 characters")
-            .MaximumLength(100).WithMessage("Password must be between 8 and 100 characters")
+            .MaximumLength(30).WithMessage("Password must be between 8 and 30 characters")
             .Matches(@"[!@#$%^&*(),.?""':{}|<>]").WithMessage("Password must contain at least one special character")
             .Matches(@"[0123456789]").WithMessage("Password must contain at least one number")
             .When( x => !string.IsNullOrEmpty(x.Password));
