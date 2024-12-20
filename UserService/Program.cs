@@ -1,4 +1,4 @@
-using UserService.ApiEndPoints;
+using UserService.Extensions;
 using UserService.Middlewares;
 using UserService.ServiceConfiguration;
 
@@ -16,14 +16,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGroup("api/User")
-    .MapUserApis()
-    .WithTags("User API");
-app.MapGroup("api/Auth")
-    .MapAuthApis()
-    .WithTags("Auth API");
-
+app.RegisterApiRoutes();
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseMiddleware<ValidationMiddleware>();
 
 app.Run();

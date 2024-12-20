@@ -1,16 +1,31 @@
 using Application.DTOs.UserDTOs;
 using Application.Interfaces;
+using UserService.EndPontFilters;
 
 namespace UserService.ApiEndPoints;
 
 public static class UserApi
 {
     const string ContentType = "application/json";
+    
     public static RouteGroupBuilder MapUserApis(this RouteGroupBuilder groups)
     {
-        groups.MapPost("/CreateUser", CreateNewUser).Accepts<CreateNewUserRequestDto>(ContentType);
-        groups.MapPost("/UpdateUser", UpdateUser).Accepts<UpdateUserRequestDto>(ContentType);
+        #region Get Requests
+
         groups.MapGet("GetUserById/UserId={userId}", GetUserById);
+
+        #endregion
+        
+        #region Post Requests
+
+        groups.MapPost("/CreateUser", CreateNewUser)
+            .AddEndpointFilter<ValidateModelFilter<CreateNewUserRequestDto>>()
+            .Accepts<CreateNewUserRequestDto>(ContentType);
+        groups.MapPost("/UpdateUser", UpdateUser)
+            .AddEndpointFilter<ValidateModelFilter<UpdateUserRequestDto>>()
+            .Accepts<UpdateUserRequestDto>(ContentType);
+
+        #endregion
         
         return groups;
     }

@@ -1,5 +1,6 @@
 using Application.DTOs.UserDTOs;
 using Application.Interfaces;
+using UserService.EndPontFilters;
 
 namespace UserService.ApiEndPoints;
 
@@ -7,7 +8,9 @@ public static class AuthApi
 {
     public static RouteGroupBuilder MapAuthApis(this RouteGroupBuilder groups)
     {
-        groups.MapPost("/LogIn", Login).Accepts<LogInRequestDto>("application/json");
+        groups.MapPost("/LogIn",Login)
+            .AddEndpointFilter<ValidateModelFilter<LogInRequestDto>>()
+            .Accepts<LogInRequestDto>("application/json");
         
         return groups;
     }
@@ -20,7 +23,7 @@ public static class AuthApi
         {
             return TypedResults.BadRequest(res);
         }
-            
+        
         return TypedResults.Ok(res);
     }
 }
