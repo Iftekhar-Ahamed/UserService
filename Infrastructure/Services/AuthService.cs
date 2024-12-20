@@ -47,4 +47,14 @@ public class AuthService(IUserInfoRepository userInfoRepository) : IAuthService
         
         return apiResponse;
     }
+
+    public string GetAccessToken()
+    {
+        return string.Empty;
+    }
+
+    public string GetRefreshToken()
+    {
+        return string.Empty;
+    }
 }
