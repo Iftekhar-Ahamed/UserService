@@ -6,7 +6,7 @@ namespace UserService.ApiEndPoints;
 
 public static class UserApi
 {
-    const string ContentType = "application/json";
+    private const string ContentType = "application/json";
     
     public static RouteGroupBuilder MapUserApis(this RouteGroupBuilder groups)
     {
