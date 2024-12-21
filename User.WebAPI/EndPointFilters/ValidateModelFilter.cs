@@ -1,7 +1,7 @@
 using Application.DTOs.APIRequestResponseDTOs;
 using FluentValidation;
 
-namespace UserService.EndPontFilters;
+namespace UserService.EndPointFilters;
 
 public class ValidateModelFilter<T>(IValidator<T> validator) : IEndpointFilter
     where T : class

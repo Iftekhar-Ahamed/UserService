@@ -14,6 +14,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection ConfigureAllServices(this IServiceCollection services,IConfiguration configuration)
     {
+        services.AddSingleton<IAppConfigService, AppConfigService>();
         
         services.AddValidatorsFromAssemblyContaining<CreateNewUserRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<LogInRequestDto>();

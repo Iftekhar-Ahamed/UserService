@@ -1,6 +1,6 @@
 using Application.DTOs.UserDTOs;
 using Application.Interfaces;
-using UserService.EndPontFilters;
+using UserService.EndPointFilters;
 
 namespace UserService.ApiEndPoints;
 

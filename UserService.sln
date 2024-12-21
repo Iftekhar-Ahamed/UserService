@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "UserService\UserService.csproj", "{B97E71B6-B5E4-43D8-B1B7-D5AEBCD949AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.WebAPI", "User.WebAPI\User.WebAPI.csproj", "{B97E71B6-B5E4-43D8-B1B7-D5AEBCD949AE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{E8481ED0-A321-45E8-9D9E-101FFA37A72A}"
 EndProject

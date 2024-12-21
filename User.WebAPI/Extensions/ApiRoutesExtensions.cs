@@ -8,6 +8,7 @@ public static class ApiRoutesExtensions
     {
         app.MapGroup("api/User")
             .MapUserApis()
+            .RequireAuthorization()
             .WithTags("User API");
 
         app.MapGroup("api/Auth")

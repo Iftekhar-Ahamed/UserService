@@ -1,6 +1,7 @@
 using Application.DTOs.UserDTOs;
+using Application.Extensions.CommonExtensions;
 using Application.Interfaces;
-using UserService.EndPontFilters;
+using UserService.EndPointFilters;
 
 namespace UserService.ApiEndPoints;
 
@@ -13,7 +14,7 @@ public static class UserApi
         #region Get Requests
 
         groups.MapGet("GetUserById/UserId={userId}", GetUserById);
-
+        groups.MapGet("GetUser", GetUserInfo);
         #endregion
         
         #region Post Requests
@@ -57,6 +58,18 @@ public static class UserApi
     private static async Task<IResult> GetUserById(IUserInfoService userInfoService,int userId)
     {
         var response = await userInfoService.GetUserInformationByIdAsync(userId: userId);
+            
+        if (response.Success)
+        {
+            return TypedResults.Ok(response);
+        }
+        
+        return TypedResults.BadRequest(response);
+    }
+    
+    private static async Task<IResult> GetUserInfo(IUserInfoService userInfoService,HttpContext httpContext)
+    {
+        var response = await userInfoService.GetUserInformationByIdAsync(userId: httpContext.GetUserId());
             
         if (response.Success)
         {

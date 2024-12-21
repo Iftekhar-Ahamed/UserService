@@ -9,4 +9,10 @@ public static class JsonConvertHelper
         string result = JsonConvert.SerializeObject(value);
         return result;
     }
+    
+    public static T? JsonStringToObject<T>(string value)
+    {
+        var result = JsonConvert.DeserializeObject<T>(value);
+        return result;
+    }
 }
