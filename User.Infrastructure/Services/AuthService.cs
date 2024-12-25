@@ -5,13 +5,13 @@ using Application.DTOs.APIRequestResponseDTOs;
 using Application.Extensions.DtoExtensions;
 using Application.Helpers.EncryptionDecryptionHelper;
 using Application.Interfaces;
-using Domain.Interfaces;
+using Domain.Interfaces.UserRepositories;
 using Domain.Models;
 using Microsoft.IdentityModel.Tokens;
 using User.Core.DTOs.UserDTOs;
 using User.Core.Interfaces;
 
-namespace Infrastructure.Services;
+namespace User.Infrastructure.Services;
 
 public class AuthService(IUserInfoRepository userInfoRepository, IAppConfigService appConfigService) : IAuthService
 {

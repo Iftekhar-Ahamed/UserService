@@ -1,8 +1,8 @@
-using Domain.Interfaces;
+using Domain.Interfaces.UserRepositories;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories;
+namespace User.Infrastructure.Repositories;
 
 public class UserInfoRepository(ChatDbContext chatDbContext) : IUserInfoRepository
 {

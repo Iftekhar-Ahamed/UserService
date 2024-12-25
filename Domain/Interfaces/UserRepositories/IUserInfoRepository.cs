@@ -1,6 +1,6 @@
 using Domain.Models;
 
-namespace Domain.Interfaces;
+namespace Domain.Interfaces.UserRepositories;
 
 public interface IUserInfoRepository
 {
