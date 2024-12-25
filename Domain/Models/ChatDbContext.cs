@@ -32,10 +32,10 @@ public partial class ChatDbContext : DbContext
             entity.ToTable("TblUserChatFriend");
 
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('tbl_user_chat_friend_id_seq'::regclass)");
+            entity.Property(e => e.ApproveStatus).HasDefaultValue((short)1);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone");
-            entity.Property(e => e.Status).HasDefaultValue((short)1);
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone");

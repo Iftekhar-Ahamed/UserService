@@ -1,7 +1,9 @@
 using Application.Infrastructure.Services;
 using Application.Interfaces;
 using Chat.Core.Interfaces;
+using Chat.Infrastructure.Repositories;
 using Chat.Infrastructure.Services;
+using Domain.Interfaces.ChatRepositories;
 using Domain.Interfaces.UserRepositories;
 using Domain.Models;
 using FluentValidation;
@@ -32,6 +34,7 @@ public static class ConfigureServices
         services.AddScoped<IAuthService, AuthService>();
 
         services.AddScoped<IChatFriendService, ChatFriendService>();
+        services.AddScoped<IChatFriendRepository, ChatFriendRepository>();
 
         return services;
     }

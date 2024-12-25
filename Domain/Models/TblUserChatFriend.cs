@@ -11,7 +11,7 @@ public partial class TblUserChatFriend
 
     public int FriendId { get; set; }
 
-    public short Status { get; set; }
+    public short ApproveStatus { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
