@@ -2,7 +2,7 @@ using Application.DTOs.CommonDTOs;
 using Application.Helpers.FileHelpers;
 using Application.Interfaces;
 
-namespace User.Services;
+namespace Application.Infrastructure.Services;
 
 public class AppConfigService() : IAppConfigService
 {
