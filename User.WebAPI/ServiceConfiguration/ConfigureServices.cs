@@ -1,12 +1,14 @@
-using Application.DTOs.UserDTOs;
 using Application.Interfaces;
-using Application.Validations.UserValidations;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentValidation;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using User.Core.DTOs.UserDTOs;
+using User.Core.Interfaces;
+using User.Core.Validations.UserValidations;
+using User.Services;
 
 namespace UserService.ServiceConfiguration;
 

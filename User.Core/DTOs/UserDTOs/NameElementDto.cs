@@ -1,4 +1,4 @@
-namespace Application.DTOs.UserDTOs;
+namespace User.Core.DTOs.UserDTOs;
 
 public class NameElementDto
 {

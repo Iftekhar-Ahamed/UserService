@@ -15,29 +15,27 @@ public class ValidateModelFilter<T>(IValidator<T> validator) : IEndpointFilter
         }
 
         var validationResult = await validator.ValidateAsync(dto);
-        if (!validationResult.IsValid)
+        if (validationResult.IsValid) return await next(context);
+        
+        var errorResponse = new ErrorResponseDto
         {
-            var errorResponse = new ErrorResponseDto
-            {
-                Title = "Error with requested parameters",
-                ErrorDetails = validationResult.Errors
-                    .Select(e => new ErrorDescriptionDto
-                    {
-                        Key = e.PropertyName,
-                        Value = e.ErrorMessage
-                    }).ToList()
-            };
+            Title = "Error with requested parameters",
+            ErrorDetails = validationResult.Errors
+                .Select(e => new ErrorDescriptionDto
+                {
+                    Key = e.PropertyName,
+                    Value = e.ErrorMessage
+                }).ToList()
+        };
 
-            var response = new ApiResponseDto<string>
-            {
-                Success = false,
-                Message = "Validation failed",
-                Error = errorResponse
-            };
+        var response = new ApiResponseDto<string>
+        {
+            Success = false,
+            Message = "Validation failed",
+            Error = errorResponse
+        };
 
-            return Results.BadRequest(response);
-        }
+        return Results.BadRequest(response);
 
-        return await next(context); 
     }
 }

@@ -2,13 +2,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Application.DTOs.APIRequestResponseDTOs;
-using Application.DTOs.UserDTOs;
 using Application.Extensions.DtoExtensions;
 using Application.Helpers.EncryptionDecryptionHelper;
 using Application.Interfaces;
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.IdentityModel.Tokens;
+using User.Core.DTOs.UserDTOs;
+using User.Core.Interfaces;
 
 namespace Infrastructure.Services;
 
@@ -45,7 +46,7 @@ public class AuthService(IUserInfoRepository userInfoRepository, IAppConfigServi
                     AccessToken = await CreateAccessToken(userId:userInfo.UserId.ToString(),userRoles: new()),
                     RefreshToken = await CreateRefreshToken(userId:userInfo.UserId.ToString(),userRoles: new()),
                 };
-                apiResponse.Success("Welcome User");
+                apiResponse.Success("Welcome User.Infrastructure");
             }
         }
         

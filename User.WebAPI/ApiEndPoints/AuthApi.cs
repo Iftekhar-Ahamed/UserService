@@ -1,5 +1,5 @@
-using Application.DTOs.UserDTOs;
-using Application.Interfaces;
+using User.Core.DTOs.UserDTOs;
+using User.Core.Interfaces;
 using UserService.EndPointFilters;
 
 namespace UserService.ApiEndPoints;

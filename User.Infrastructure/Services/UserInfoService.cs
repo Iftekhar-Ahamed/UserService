@@ -1,10 +1,10 @@
 using Application.DTOs.APIRequestResponseDTOs;
-using Application.DTOs.UserDTOs;
 using Application.Extensions.DtoExtensions;
 using Application.Helpers.EncryptionDecryptionHelper;
-using Application.Interfaces;
 using Domain.Interfaces;
 using Domain.Models;
+using User.Core.DTOs.UserDTOs;
+using User.Core.Interfaces;
 
 namespace Infrastructure.Services;
 
@@ -16,7 +16,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
 
         if (await userInfoRepository.IsDuplicateUserAsync(email: userInfo.Email))
         {
-            response.Failed("User already exists with provided email",true);
+            response.Failed("User.Infrastructure already exists with provided email",true);
         }
         else
         {
@@ -37,7 +37,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
 
             if (await userInfoRepository.AddUserAsync(user: newUser))
             {
-                response.Success("Successfully User Created!",true);
+                response.Success("Successfully User.Infrastructure Created!",true);
             }
             else
             {
@@ -57,7 +57,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
         if (exitingInformationUser == null)
         {
             response.Data = false;
-            response.Failed("User does not exist",true);
+            response.Failed("User.Infrastructure does not exist",true);
             
             return response;
         }
@@ -79,7 +79,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
 
         if (await userInfoRepository.UpdateUserAsync(exitingInformationUser))
         {
-            response.Success("Successfully Updated User!", true);
+            response.Success("Successfully Updated User.Infrastructure!", true);
         }
         else
         {
@@ -98,11 +98,11 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
         if (userInformation == null)
         {
             response.Data = null;
-            response.Failed("User does not exist",true);
+            response.Failed("User.Infrastructure does not exist",true);
         }
         else
         {
-            response.Success("Successfully Retrieved User!",true);
+            response.Success("Successfully Retrieved User.Infrastructure!",true);
             response.Data = new GetUserInformationByIdResponseDto
             {
                 UserId = userInformation.UserId,

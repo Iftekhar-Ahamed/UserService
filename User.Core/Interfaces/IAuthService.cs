@@ -1,7 +1,7 @@
 using Application.DTOs.APIRequestResponseDTOs;
-using Application.DTOs.UserDTOs;
+using User.Core.DTOs.UserDTOs;
 
-namespace Application.Interfaces;
+namespace User.Core.Interfaces;
 
 public interface IAuthService
 {
