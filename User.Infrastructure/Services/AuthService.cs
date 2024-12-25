@@ -46,7 +46,7 @@ public class AuthService(IUserInfoRepository userInfoRepository, IAppConfigServi
                     AccessToken = await CreateAccessToken(userId:userInfo.UserId.ToString(),userRoles: new()),
                     RefreshToken = await CreateRefreshToken(userId:userInfo.UserId.ToString(),userRoles: new()),
                 };
-                apiResponse.Success("Welcome User.Infrastructure");
+                apiResponse.Success("Welcome User");
             }
         }
         

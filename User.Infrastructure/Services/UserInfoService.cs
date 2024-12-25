@@ -1,5 +1,6 @@
 using Application.DTOs.APIRequestResponseDTOs;
 using Application.Extensions.DtoExtensions;
+using Application.Helpers.BasicDataHelpers;
 using Application.Helpers.EncryptionDecryptionHelper;
 using Domain.Interfaces.UserRepositories;
 using Domain.Models;
@@ -16,7 +17,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
 
         if (await userInfoRepository.IsDuplicateUserAsync(email: userInfo.Email))
         {
-            response.Failed("User.Infrastructure already exists with provided email",true);
+            response.Failed("User already exists with provided email",true);
         }
         else
         {
@@ -37,7 +38,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
 
             if (await userInfoRepository.AddUserAsync(user: newUser))
             {
-                response.Success("Successfully User.Infrastructure Created!",true);
+                response.Success("Successfully User Created!",true);
             }
             else
             {
@@ -79,7 +80,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
 
         if (await userInfoRepository.UpdateUserAsync(exitingInformationUser))
         {
-            response.Success("Successfully Updated User.Infrastructure!", true);
+            response.Success("Successfully Updated User!", true);
         }
         else
         {
@@ -121,6 +122,25 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
             };
             
         }
+        
+        return response;
+    }
+
+    public async Task<ApiResponseDto<List<SearchUserResultResponseDto>>> GetUserSearchResult(string searchTerm)
+    {
+        var response = new ApiResponseDto<List<SearchUserResultResponseDto>>();
+        var result = await userInfoRepository.SearchUserAsync(searchTerm);
+        
+        response.Data = result.Select( user => new SearchUserResultResponseDto
+        {
+            Id = user.UserId,
+            Name = DataAggregatorHelper.CombineNames([user.FirstName,user.MiddleName ?? string.Empty,user.LastName]),
+            FriendshipStatus = user.UserId > 3 ? 1 : user.UserId,
+            Avatar = "avatar.jpg",
+            UserActive = false,
+        }).ToList();
+
+        response.Success();
         
         return response;
     }

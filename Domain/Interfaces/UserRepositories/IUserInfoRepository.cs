@@ -9,4 +9,5 @@ public interface IUserInfoRepository
     Task<TblUserInformation?> GetUserByEmailAsync(string email);
     Task<TblUserInformation?> GetUserByIdAsync(int userId);
     Task<bool> UpdateUserAsync(TblUserInformation userInfo);
+    Task<List<TblUserInformation>>SearchUserAsync(string searchTerm);
 }

@@ -1,3 +1,4 @@
+using Application.Helpers.BasicDataHelpers;
 using Domain.Interfaces.UserRepositories;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -43,5 +44,14 @@ public class UserInfoRepository(ChatDbContext chatDbContext) : IUserInfoReposito
         var result = chatDbContext.TblUserInformations.Update(userInfo);
 
         return await chatDbContext.SaveChangesAsync() == 1;
+    }
+
+    public async Task<List<TblUserInformation>> SearchUserAsync(string searchTerm)
+    {
+        var result = await chatDbContext.TblUserInformations
+                .Where(user => user.Email.Contains(searchTerm))
+                .ToListAsync();
+
+        return result;
     }
 }

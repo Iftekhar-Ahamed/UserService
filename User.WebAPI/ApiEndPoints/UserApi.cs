@@ -15,6 +15,8 @@ public static class UserApi
 
         groups.MapGet("GetUserById/UserId={userId}", GetUserById);
         groups.MapGet("GetUser", GetUserInfo);
+        groups.MapGet("SearchUser/SearchTerm={searchTerm}", SearchUser);
+        
         #endregion
         
         #region Post Requests
@@ -70,6 +72,18 @@ public static class UserApi
     private static async Task<IResult> GetUserInfo(IUserInfoService userInfoService,HttpContext httpContext)
     {
         var response = await userInfoService.GetUserInformationByIdAsync(userId: httpContext.GetUserId());
+            
+        if (response.Success)
+        {
+            return TypedResults.Ok(response);
+        }
+        
+        return TypedResults.BadRequest(response);
+    }
+    
+    private static async Task<IResult> SearchUser(string searchTerm,IUserInfoService userInfoService)
+    {
+        var response = await userInfoService.GetUserSearchResult(searchTerm);
             
         if (response.Success)
         {
