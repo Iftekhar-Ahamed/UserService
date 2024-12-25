@@ -1,5 +1,5 @@
 namespace Domain.Interfaces.ChatRepositories;
 
-public interface IChatListRepository
+public interface IChatFriendRepository
 {
 }

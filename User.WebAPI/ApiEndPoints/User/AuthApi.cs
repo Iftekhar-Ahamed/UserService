@@ -2,7 +2,7 @@ using User.Core.DTOs.UserDTOs;
 using User.Core.Interfaces;
 using UserService.EndPointFilters;
 
-namespace UserService.ApiEndPoints;
+namespace UserService.ApiEndPoints.User;
 
 public static class AuthApi
 {

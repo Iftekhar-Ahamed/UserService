@@ -1,4 +1,5 @@
-using UserService.ApiEndPoints;
+using UserService.ApiEndPoints.Chat;
+using UserService.ApiEndPoints.User;
 
 namespace UserService.Extensions;
 
@@ -14,5 +15,10 @@ public static class ApiRoutesExtensions
         app.MapGroup("api/Auth")
             .MapAuthApis()
             .WithTags("Auth API");
+        
+        app.MapGroup("api/Chat")
+            .MapChatFriendMangeApis()
+            .WithTags("Chat Friend Manage API");
+
     }
 }
