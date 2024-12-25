@@ -15,6 +15,8 @@ public partial class ChatDbContext : DbContext
     {
     }
 
+    public virtual DbSet<TblUserChatFriend> TblUserChatFriends { get; set; }
+
     public virtual DbSet<TblUserInformation> TblUserInformations { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -23,6 +25,22 @@ public partial class ChatDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TblUserChatFriend>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("TblUserChatFriend_pkey");
+
+            entity.ToTable("TblUserChatFriend");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('tbl_user_chat_friend_id_seq'::regclass)");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone");
+            entity.Property(e => e.Status).HasDefaultValue((short)1);
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone");
+        });
+
         modelBuilder.Entity<TblUserInformation>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("TblUserInformation_pkey");
@@ -40,6 +58,7 @@ public partial class ChatDbContext : DbContext
             entity.Property(e => e.Password).HasMaxLength(100);
             entity.Property(e => e.Title).HasMaxLength(5);
         });
+        modelBuilder.HasSequence("tbl_user_chat_friend_id_seq");
 
         OnModelCreatingPartial(modelBuilder);
     }

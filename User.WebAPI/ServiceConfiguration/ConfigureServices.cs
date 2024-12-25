@@ -1,6 +1,5 @@
 using Application.Infrastructure.Services;
 using Application.Interfaces;
-using Domain.Interfaces;
 using Domain.Interfaces.UserRepositories;
 using Domain.Models;
 using FluentValidation;
