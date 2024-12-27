@@ -81,9 +81,9 @@ public static class UserApi
         return TypedResults.BadRequest(response);
     }
     
-    private static async Task<IResult> SearchUser(string searchTerm,IUserInfoService userInfoService)
+    private static async Task<IResult> SearchUser(string searchTerm,IUserInfoService userInfoService,HttpContext httpContext)
     {
-        var response = await userInfoService.GetUserSearchResult(searchTerm);
+        var response = await userInfoService.GetUserSearchResult(searchTerm,httpContext.GetUserId());
             
         if (response.Success)
         {

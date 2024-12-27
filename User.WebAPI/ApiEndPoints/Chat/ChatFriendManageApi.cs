@@ -1,4 +1,4 @@
-using Application.Extensions.DtoExtensions;
+using Application.Extensions.CommonExtensions;
 using Chat.Core.DTOs.UserChatFriendDTOs;
 using Chat.Core.Interfaces;
 using UserService.EndPointFilters;
@@ -13,6 +13,7 @@ public static class ChatFriendManageApi
             .AddEndpointFilter<ValidateModelFilter<AddNewChatFriendRequestDto>>()
             .Accepts<AddNewChatFriendRequestDto>("application/json");
         
+        groups.MapGet("SearchChatUser/SearchTerm={searchTerm}", SearchChatUser);
         return groups;
     }
 
@@ -26,5 +27,17 @@ public static class ChatFriendManageApi
         }
         
         return TypedResults.BadRequest(result);
+    }
+    
+    private static async Task<IResult> SearchChatUser(string searchTerm,IChatFriendService chatFriendService,HttpContext httpContext)
+    {
+        var response = await chatFriendService.SearchChatUser(searchTerm,httpContext.GetUserId());
+            
+        if (response.Success)
+        {
+            return TypedResults.Ok(response);
+        }
+        
+        return TypedResults.BadRequest(response);
     }
 }

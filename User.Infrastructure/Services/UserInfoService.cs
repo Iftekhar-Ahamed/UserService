@@ -126,18 +126,17 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
         return response;
     }
 
-    public async Task<ApiResponseDto<List<SearchUserResultResponseDto>>> GetUserSearchResult(string searchTerm)
+    public async Task<ApiResponseDto<List<SearchUserResultResponseDto>>> GetUserSearchResult(string searchTerm,long userId)
     {
         var response = new ApiResponseDto<List<SearchUserResultResponseDto>>();
-        var result = await userInfoRepository.SearchUserAsync(searchTerm);
+        var result = await userInfoRepository.SearchUserAsync(searchTerm,userId);
         
         response.Data = result.Select( user => new SearchUserResultResponseDto
         {
             Id = user.UserId,
             Name = DataAggregatorHelper.CombineNames([user.FirstName,user.MiddleName ?? string.Empty,user.LastName]),
-            FriendshipStatus = user.UserId > 3 ? 1 : user.UserId,
             Avatar = "avatar.jpg",
-            UserActive = false,
+            IsActive = user.IsActive,
         }).ToList();
 
         response.Success();

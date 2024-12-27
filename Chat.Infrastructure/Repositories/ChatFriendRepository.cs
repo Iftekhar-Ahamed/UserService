@@ -16,6 +16,8 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
         
         return res;
     }
+    
+    //public async Task<>
 
     public Task<bool> AddChatFriendRequestAsync(long selfUserId, long friendUserId)
     {

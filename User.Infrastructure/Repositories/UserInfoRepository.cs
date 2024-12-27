@@ -46,11 +46,14 @@ public class UserInfoRepository(ChatDbContext chatDbContext) : IUserInfoReposito
         return await chatDbContext.SaveChangesAsync() == 1;
     }
 
-    public async Task<List<TblUserInformation>> SearchUserAsync(string searchTerm)
+    public async Task<List<TblUserInformation>> SearchUserAsync(string searchTerm,
+        long userId,
+        int pageNo = 0,
+        int pageSize = 10)
     {
-        var result = await chatDbContext.TblUserInformations
-                .Where(user => user.Email.Contains(searchTerm))
-                .ToListAsync();
+        var result = await chatDbContext.TblUserInformations.ToListAsync();
+                /*.Where(user => user.Email.Contains(searchTerm) && user.UserId != userId)
+                .ToListAsync();*/
 
         return result;
     }
