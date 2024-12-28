@@ -14,7 +14,7 @@ public static class ChatFriendManageApi
             .AddEndpointFilter<ValidateModelFilter<AddNewChatFriendRequestDto>>()
             .Accepts<AddNewChatFriendRequestDto>("application/json");
         
-        groups.MapGet("SearchChatUser/SearchTerm={searchTerm}PageNo={pageNo}PageSize={pageSize}", SearchChatUser);
+        groups.MapGet("SearchChatUser/SearchTerm={searchTerm}&PageNo={pageNo}&PageSize={pageSize}", SearchChatUser);
         return groups;
     }
 

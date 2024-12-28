@@ -72,7 +72,7 @@ public class ChatFriendService(
         {
          Id   = result.Id,
          Name = DataAggregatorHelper.CombineNames([result.FirstName, result.MiddleName, result.LastName]),
-         Avatar = result.Avatar,
+         Avatar = "avatar.jpeg",
          FriendshipStatus = result.ApproveStatus,
         }).ToList();
         

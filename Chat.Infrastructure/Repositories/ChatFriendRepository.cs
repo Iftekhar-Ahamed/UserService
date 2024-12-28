@@ -1,8 +1,8 @@
 using Domain.DTOs;
+using Domain.Enums;
 using Domain.Interfaces.ChatRepositories;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Chat.Infrastructure.Repositories;
 
@@ -34,11 +34,41 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
         var matchedUsers = chatDbContext.TblUserInformations.Where
         (
             user => 
-            user.Email.Contains(searchTerm) && user.UserId == userId
+            user.Email.Contains(searchTerm) && user.UserId != userId
         )
         .Skip(pageSize * (pageNumber - 1))
         .Take(pageSize);
+
+        var matchedUserJoinWithFriendShipStatus = from user in matchedUsers
+            join userChatFriend in chatDbContext.TblUserChatFriends
+                on user.UserId equals userChatFriend.UserId into userChatFriendsGroup
+            from userChatFriend in userChatFriendsGroup.DefaultIfEmpty()
+            select new
+            {
+                user.UserId,
+                user.FirstName,
+                user.MiddleName,
+                user.LastName,
+                friendshipStatusId = userChatFriend == null 
+                    ? 0
+                    : userChatFriend.FriendShipStatusId
+            };
+
         
-        return [];
+        var finalResult = await (from user in matchedUserJoinWithFriendShipStatus
+            join status in chatDbContext.TblUserChatFriendShipStatuses
+                on user.friendshipStatusId equals status.Id into groupResult
+            from result in groupResult.DefaultIfEmpty() 
+            select new ChatUserSearchResultDto
+            {
+                Id = user.UserId,
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+                ApproveStatus = result == null ? (int)FriendshipStatus.New : result.ApproveStatus,
+            }).ToListAsync();
+                
+        
+        return finalResult;
     }
 }
