@@ -17,6 +17,8 @@ public partial class ChatDbContext : DbContext
 
     public virtual DbSet<TblUserChatFriend> TblUserChatFriends { get; set; }
 
+    public virtual DbSet<TblUserChatFriendShipStatus> TblUserChatFriendShipStatuses { get; set; }
+
     public virtual DbSet<TblUserInformation> TblUserInformations { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -27,11 +29,33 @@ public partial class ChatDbContext : DbContext
     {
         modelBuilder.Entity<TblUserChatFriend>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("TblUserChatFriend_pkey");
+            entity.HasKey(e => e.Id).HasName("tbluserchatfriend_pk");
 
             entity.ToTable("TblUserChatFriend");
 
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('tbl_user_chat_friend_id_seq'::regclass)");
+            entity.Property(e => e.CreationDateTime)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone");
+
+            entity.HasOne(d => d.FriendShipStatus).WithMany(p => p.TblUserChatFriends)
+                .HasForeignKey(d => d.FriendShipStatusId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("tbluserchatfriend_tbluserchatfriendshipstatus_id_fk");
+
+            entity.HasOne(d => d.User).WithMany(p => p.TblUserChatFriends)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("tbluserchatfriend_tbluserinformation_userid_fk");
+        });
+
+        modelBuilder.Entity<TblUserChatFriendShipStatus>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("TblUserChatFriend_pkey");
+
+            entity.ToTable("TblUserChatFriendShipStatus");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('tbl_user_chat_friend_ship_status_id_seq'::regclass)");
             entity.Property(e => e.ApproveStatus).HasDefaultValue((short)1);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -59,6 +83,7 @@ public partial class ChatDbContext : DbContext
             entity.Property(e => e.Title).HasMaxLength(5);
         });
         modelBuilder.HasSequence("tbl_user_chat_friend_id_seq");
+        modelBuilder.HasSequence("tbl_user_chat_friend_ship_status_id_seq");
 
         OnModelCreatingPartial(modelBuilder);
     }

@@ -11,8 +11,7 @@ using Domain.Interfaces.UserRepositories;
 namespace Chat.Infrastructure.Services;
 
 public class ChatFriendService(
-    IChatFriendRepository chatFriendRepository,
-    IUserInfoRepository userInfoRepository
+    IChatFriendRepository chatFriendRepository
     ) : IChatFriendService
 {
     public async Task<ApiResponseDto<string>> SentChatFriendRequest(AddNewChatFriendRequestDto addFriendRequestDto)
@@ -58,30 +57,26 @@ public class ChatFriendService(
         return response;
     }
 
-    public async Task<ApiResponseDto<List<SearchChatUserResultResponseDto>>> SearchChatUser(string searchTerm,long userId)
+    public async Task<ApiResponseDto<List<SearchChatUserResultResponseDto>>> SearchChatUser(
+        string searchTerm,
+        long userId,
+        int pageNumber,
+        int pageSize
+    )
     {
         var response = new ApiResponseDto<List<SearchChatUserResultResponseDto>>();
         
-        var matchedResult = await userInfoRepository.SearchUserAsync(searchTerm,userId);
+        var matchedResult = await chatFriendRepository.SearchChatUserAsync(searchTerm,userId,pageNumber,pageSize);
 
-        var processedResponse = new ConcurrentBag<SearchChatUserResultResponseDto>();
-        
-        await Parallel.ForEachAsync(matchedResult, async (user, _) =>
+        var processedResponse = matchedResult.Select(result => new SearchChatUserResultResponseDto
         {
-            var friendShipHistory = await chatFriendRepository.GetFriendshipAsync(userId, user.UserId);
-            
-            int friendshipStatus = friendShipHistory?.ApproveStatus ?? 0;
-            
-            processedResponse.Add(new SearchChatUserResultResponseDto
-            {
-                Id = user.UserId,
-                Name = DataAggregatorHelper.CombineNames([user.FirstName,user.MiddleName ?? string.Empty,user.LastName]),
-                Avatar = "avatar.jpg",
-                FriendshipStatus = (int)friendshipStatus
-            });
-        });
+         Id   = result.Id,
+         Name = DataAggregatorHelper.CombineNames([result.FirstName, result.MiddleName, result.LastName]),
+         Avatar = result.Avatar,
+         FriendshipStatus = result.ApproveStatus,
+        }).ToList();
         
-        response.Data = processedResponse.ToList();
+        response.Data = processedResponse;
         response.Success();
         
         return response;

@@ -30,4 +30,6 @@ public partial class TblUserInformation
     public DateTime CreationDateTime { get; set; }
 
     public DateTime LastModifiedDateTime { get; set; }
+
+    public virtual ICollection<TblUserChatFriend> TblUserChatFriends { get; set; } = new List<TblUserChatFriend>();
 }

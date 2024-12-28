@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Application.Extensions.CommonExtensions;
 using Chat.Core.DTOs.UserChatFriendDTOs;
 using Chat.Core.Interfaces;
@@ -13,7 +14,7 @@ public static class ChatFriendManageApi
             .AddEndpointFilter<ValidateModelFilter<AddNewChatFriendRequestDto>>()
             .Accepts<AddNewChatFriendRequestDto>("application/json");
         
-        groups.MapGet("SearchChatUser/SearchTerm={searchTerm}", SearchChatUser);
+        groups.MapGet("SearchChatUser/SearchTerm={searchTerm}PageNo={pageNo}PageSize={pageSize}", SearchChatUser);
         return groups;
     }
 
@@ -29,9 +30,9 @@ public static class ChatFriendManageApi
         return TypedResults.BadRequest(result);
     }
     
-    private static async Task<IResult> SearchChatUser(string searchTerm,IChatFriendService chatFriendService,HttpContext httpContext)
+    private static async Task<IResult> SearchChatUser(string searchTerm,[Required]int pageNo,[Required]int pageSize,IChatFriendService chatFriendService,HttpContext httpContext)
     {
-        var response = await chatFriendService.SearchChatUser(searchTerm,httpContext.GetUserId());
+        var response = await chatFriendService.SearchChatUser(searchTerm,httpContext.GetUserId(),pageNo,pageSize);
             
         if (response.Success)
         {
