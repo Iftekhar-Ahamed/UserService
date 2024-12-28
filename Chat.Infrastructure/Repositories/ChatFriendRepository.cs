@@ -19,9 +19,20 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
         return res;
     }
     
-    public Task<bool> AddChatFriendRequestAsync(long selfUserId, long friendUserId)
+    public async Task<bool> AddChatFriendRequestAsync(long selfUserId, long friendUserId)
     {
-        throw new NotImplementedException();
+        var data = new TblUserChatFriendShipStatus
+        {
+            UserId = (int)selfUserId,
+            FriendId = (int)friendUserId,
+            ApproveStatus = 0,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+        
+        chatDbContext.TblUserChatFriendShipStatuses.Add(data);
+        
+        return await chatDbContext.SaveChangesAsync() == 1;
     }
 
     public async Task<List<ChatUserSearchResultDto>> SearchChatUserAsync(
@@ -42,18 +53,18 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
         var matchedUserJoinWithFriendShipStatus = from user in matchedUsers
             join userChatFriend in chatDbContext.TblUserChatFriends
                 on user.UserId equals userChatFriend.UserId into userChatFriendsGroup
-            from userChatFriend in userChatFriendsGroup.DefaultIfEmpty()
+            from result in userChatFriendsGroup.DefaultIfEmpty()
             select new
             {
                 user.UserId,
                 user.FirstName,
                 user.MiddleName,
                 user.LastName,
-                friendshipStatusId = userChatFriend == null 
+                friendshipStatusId = result == null 
                     ? 0
-                    : userChatFriend.FriendShipStatusId
+                    : result.FriendShipStatusId
             };
-
+        
         
         var finalResult = await (from user in matchedUserJoinWithFriendShipStatus
             join status in chatDbContext.TblUserChatFriendShipStatuses

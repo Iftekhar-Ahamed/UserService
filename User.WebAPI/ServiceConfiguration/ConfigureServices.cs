@@ -1,6 +1,7 @@
 using Application.Infrastructure.Services;
 using Application.Interfaces;
 using Chat.Core.Interfaces;
+using Chat.Core.Validations.ChatFriendManageValidations;
 using Chat.Infrastructure.Repositories;
 using Chat.Infrastructure.Services;
 using Domain.Interfaces.ChatRepositories;
@@ -24,6 +25,7 @@ public static class ConfigureServices
         
         services.AddValidatorsFromAssemblyContaining<CreateNewUserRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<LogInRequestDto>();
+        services.AddValidatorsFromAssemblyContaining<AddNewChatFriendRequestValidator>();
         
         services.AddDbContext<ChatDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
