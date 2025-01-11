@@ -20,14 +20,19 @@ public static class UserApi
         #endregion
         
         #region Post Requests
-
-        groups.MapPost("/CreateUser", CreateNewUser)
-            .AddEndpointFilter<ValidateModelFilter<CreateNewUserRequestDto>>()
-            .Accepts<CreateNewUserRequestDto>(ContentType);
         groups.MapPost("/UpdateUser", UpdateUser)
             .AddEndpointFilter<ValidateModelFilter<UpdateUserRequestDto>>()
             .Accepts<UpdateUserRequestDto>(ContentType);
-
+        #endregion
+        
+        return groups;
+    }
+    public static RouteGroupBuilder MapUserPublicApis(this RouteGroupBuilder groups)
+    {
+        #region Post Requests
+        groups.MapPost("/CreateUser", CreateNewUser)
+            .AddEndpointFilter<ValidateModelFilter<CreateNewUserRequestDto>>()
+            .Accepts<CreateNewUserRequestDto>(ContentType);
         #endregion
         
         return groups;

@@ -19,14 +19,17 @@ public class CreateNewUserRequestValidator : AbstractValidator<CreateNewUserRequ
             .EmailAddress().WithMessage("Email is not valid.");
 
         RuleFor(x => x.ContactNumberCountryCode)
-            .NotEmpty().WithMessage("Country code is required.")
-            .Matches(@"^\+\d+$").WithMessage("Country code must be in the format '+<digits>'.");
+            .Matches(@"^\+\d+$")
+            .When(x => !string.IsNullOrEmpty(x.ContactNumberCountryCode)) 
+            .WithMessage("Country code must be in the format '+<digits>'.");
 
         RuleFor(x => x.ContactNumber)
-            .NotEmpty().WithMessage("Contact number is required.")
-            .Matches(@"^\d+$").WithMessage("Contact number must only contain digits.")
+            .Matches(@"^\d+$")
+            .When(x => !string.IsNullOrEmpty(x.ContactNumber))
+            .WithMessage("Contact number must only contain digits.")
             .MinimumLength(7).WithMessage("Contact number must be at least 7 digits.")
             .MaximumLength(15).WithMessage("Contact number must not exceed 15 digits.");
+
         
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required")

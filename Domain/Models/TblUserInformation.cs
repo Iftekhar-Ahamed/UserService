@@ -19,9 +19,9 @@ public partial class TblUserInformation
 
     public string Email { get; set; } = null!;
 
-    public string ContactNumberCountryCode { get; set; } = null!;
+    public string? ContactNumberCountryCode { get; set; }
 
-    public string ContactNumber { get; set; } = null!;
+    public string? ContactNumber { get; set; }
 
     public string? Password { get; set; }
 

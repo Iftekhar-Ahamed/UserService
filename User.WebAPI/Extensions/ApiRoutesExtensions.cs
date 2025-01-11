@@ -8,6 +8,10 @@ public static class ApiRoutesExtensions
     public static void RegisterApiRoutes(this IEndpointRouteBuilder app)
     {
         app.MapGroup("api/User")
+            .MapUserPublicApis()
+            .WithTags("User Public API");
+        
+        app.MapGroup("api/User")
             .MapUserApis()
             .RequireAuthorization()
             .WithTags("User API");
