@@ -23,8 +23,7 @@ public class AuthService(IUserInfoRepository userInfoRepository, IAppConfigServi
 
         if (userInfo == null)
         {
-            apiResponse.Message = "Username is invalid";
-            apiResponse.Success = false;
+            apiResponse.Failed("Username is invalid",true);
         }
         else
         {
@@ -36,8 +35,7 @@ public class AuthService(IUserInfoRepository userInfoRepository, IAppConfigServi
             
             if (!OneWayEncryptionHelper.IsValidPassword(request.Password, userInfo.Password))
             {
-                apiResponse.Message = "Wrong Password";
-                apiResponse.Success = false;
+                apiResponse.Failed("Wrong Password",true);
             }
             else
             {
@@ -46,7 +44,7 @@ public class AuthService(IUserInfoRepository userInfoRepository, IAppConfigServi
                     AccessToken = await CreateAccessToken(userId:userInfo.UserId.ToString(),userRoles: new()),
                     RefreshToken = await CreateRefreshToken(userId:userInfo.UserId.ToString(),userRoles: new()),
                 };
-                apiResponse.Success("Welcome User");
+                apiResponse.Success("Welcome User",true);
             }
         }
         

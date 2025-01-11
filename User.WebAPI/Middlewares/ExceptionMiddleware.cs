@@ -17,7 +17,7 @@ public class ExceptionMiddleware(RequestDelegate next)
             {
                 Data = null,
                 Message = "Something went wrong",
-                ShowMessage = false,
+                ShowMessage = true,
                 Error = new ErrorResponseDto
                 {
                     Title = "Something went wrong",

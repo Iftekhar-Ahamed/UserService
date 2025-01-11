@@ -38,7 +38,7 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
 
             if (await userInfoRepository.AddUserAsync(user: newUser))
             {
-                response.Success("Successfully User Created!",true);
+                response.Success("Successfully user created. Go to sign in.",true);
             }
             else
             {
@@ -99,11 +99,11 @@ public class UserInfoService (IUserInfoRepository userInfoRepository): IUserInfo
         if (userInformation == null)
         {
             response.Data = null;
-            response.Failed("User.Infrastructure does not exist",true);
+            response.Failed("User does not exist",true);
         }
         else
         {
-            response.Success("Successfully Retrieved User.Infrastructure!",true);
+            response.Success("Successfully Retrieved User.",false);
             response.Data = new GetUserInformationByIdResponseDto
             {
                 UserId = userInformation.UserId,
