@@ -1,11 +1,10 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Extensions.CommonExtensions;
 
 public static class HttpContextExtension
 {
-    public static int GetUserId(this HttpContext httpContext)
+    /*public static int GetUserId(this HttpContext httpContext)
     {
         string? userIdClaim = httpContext.User.FindFirst(ClaimTypes.Name)?.Value;
     
@@ -15,5 +14,5 @@ public static class HttpContextExtension
         }
         
         return userId;
-    }
+    }*/
 }

@@ -76,7 +76,7 @@ public static class UserApi
     
     private static async Task<IResult> GetUserInfo(IUserInfoService userInfoService,HttpContext httpContext)
     {
-        var response = await userInfoService.GetUserInformationByIdAsync(userId: httpContext.GetUserId());
+        var response = await userInfoService.GetUserInformationByIdAsync(userId: 1);
             
         if (response.Success)
         {
@@ -88,7 +88,7 @@ public static class UserApi
     
     private static async Task<IResult> SearchUser(string searchTerm,IUserInfoService userInfoService,HttpContext httpContext)
     {
-        var response = await userInfoService.GetUserSearchResult(searchTerm,httpContext.GetUserId());
+        var response = await userInfoService.GetUserSearchResult(searchTerm,1);
             
         if (response.Success)
         {

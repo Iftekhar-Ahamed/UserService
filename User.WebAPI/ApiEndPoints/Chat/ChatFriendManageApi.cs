@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Application.Extensions.CommonExtensions;
 using Chat.Core.DTOs.UserChatFriendDTOs;
 using Chat.Core.Interfaces;
 using UserService.EndPointFilters;
@@ -30,9 +28,9 @@ public static class ChatFriendManageApi
         return TypedResults.BadRequest(result);
     }
     
-    private static async Task<IResult> SearchChatUser(string searchTerm,[Required]int pageNo,[Required]int pageSize,IChatFriendService chatFriendService,HttpContext httpContext)
+    private static async Task<IResult> SearchChatUser(string searchTerm,int pageNo,int pageSize,IChatFriendService chatFriendService,HttpContext httpContext)
     {
-        var response = await chatFriendService.SearchChatUser(searchTerm,httpContext.GetUserId(),pageNo,pageSize);
+        var response = await chatFriendService.SearchChatUser(searchTerm,1,pageNo,pageSize);
             
         if (response.Success)
         {
