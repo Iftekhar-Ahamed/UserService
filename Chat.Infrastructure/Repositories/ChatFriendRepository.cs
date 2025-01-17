@@ -9,35 +9,76 @@ namespace Chat.Infrastructure.Repositories;
 public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepository
 {
     public async Task<TblUserChatFriendShipStatus?> GetFriendshipAsync(long selfUserId, long friendUserId)
-    {   
-        var res = await chatDbContext.TblUserChatFriendShipStatuses
-            .Where(user =>
-                (user.UserId == selfUserId && user.FriendId == friendUserId || 
-                user.UserId == friendUserId && user.FriendId == selfUserId))
-            .FirstOrDefaultAsync();
-        
-        return res;
+    {
+        var matchedFriendship = await chatDbContext.TblUserChatFriends
+            .Where(friendShip =>
+                friendShip.UserId == friendUserId ||
+                friendShip.UserId == selfUserId)
+            .GroupBy(friendShip => friendShip.FriendShipStatusId)
+            .Select(group => new { group.Key, Count = group.Count() })
+            .FirstOrDefaultAsync(group => group.Count > 1);
+
+        if (matchedFriendship != null)
+        {
+            return await chatDbContext.TblUserChatFriendShipStatuses
+                .FirstOrDefaultAsync(status => status.Id == matchedFriendship.Key);
+        }
+
+        return null;
     }
     
     public async Task<bool> AddChatFriendRequestAsync(long selfUserId, long friendUserId)
     {
-        var data = new TblUserChatFriendShipStatus
+        await using var transaction = await chatDbContext.Database.BeginTransactionAsync();
+
+        try
         {
-            UserId = (int)selfUserId,
-            FriendId = (int)friendUserId,
-            ApproveStatus = 0,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
-        };
-        
-        chatDbContext.TblUserChatFriendShipStatuses.Add(data);
-        
-        return await chatDbContext.SaveChangesAsync() == 1;
+            var friendshipStatus = new TblUserChatFriendShipStatus
+            {
+                ActionBy = (int)selfUserId,
+                ApproveStatus = (int)FriendshipStatus.Pending,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            await chatDbContext.TblUserChatFriendShipStatuses.AddAsync(friendshipStatus);
+            await chatDbContext.SaveChangesAsync();
+
+            var friendEntries = new List<TblUserChatFriend>
+            {
+                new TblUserChatFriend
+                {
+                    UserId = (int)friendUserId,
+                    FriendShipStatusId = friendshipStatus.Id,
+                    IsActive = true,
+                    CreationDateTime = DateTime.Now
+                },
+                new TblUserChatFriend
+                {
+                    UserId = (int)selfUserId,
+                    FriendShipStatusId = friendshipStatus.Id,
+                    IsActive = true,
+                    CreationDateTime = DateTime.Now
+                }
+            };
+
+            await chatDbContext.TblUserChatFriends.AddRangeAsync(friendEntries);
+            await chatDbContext.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            return false;
+        }
     }
+
 
     public async Task<bool> UpdateChatFriendRequestAsync(TblUserChatFriendShipStatus updatedFriendship)
     {
-        var res = chatDbContext.TblUserChatFriendShipStatuses.Update(updatedFriendship);
+        chatDbContext.TblUserChatFriendShipStatuses.Update(updatedFriendship);
         return await chatDbContext.SaveChangesAsync() == 1;
     }
 
@@ -48,46 +89,44 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
         int pageSize
     )
     {
-        var matchedUsers = chatDbContext.TblUserInformations.Where
-        (
-            user => 
-            user.Email.Contains(searchTerm) 
-            && user.UserId != userId
-            && user.IsActive == true
-        )
-        .Skip(pageSize * (pageNumber - 1))
-        .Take(pageSize);
-
-        var matchedUserJoinWithFriendShipStatus = from user in matchedUsers
-            join userChatFriend in chatDbContext.TblUserChatFriends
-                on user.UserId equals userChatFriend.UserId into userChatFriendsGroup
-            from result in userChatFriendsGroup.DefaultIfEmpty()
-            select new
+        var filteredUserInfo = chatDbContext.TblUserInformations
+            .Where(u => u.Email.Contains(searchTerm) && u.IsActive == true)
+            .Skip(0) 
+            .Take(10) 
+            .Select(u => new
             {
-                user.UserId,
-                user.FirstName,
-                user.MiddleName,
-                user.LastName,
-                friendshipStatusId = result == null 
-                    ? 0
-                    : result.FriendShipStatusId
-            };
-        
-        
-        var finalResult = await (from user in matchedUserJoinWithFriendShipStatus
-            join status in chatDbContext.TblUserChatFriendShipStatuses
-                on user.friendshipStatusId equals status.Id into groupResult
-            from result in groupResult.DefaultIfEmpty() 
+                u.UserId,
+                u.FirstName,
+                u.MiddleName,
+                u.LastName
+            });
+
+        var friendshipStatus = chatDbContext.TblUserChatFriends
+            .Where(ucf => ucf.UserId == userId)
+            .Select(ucf => new
+            {
+                ucf.UserId,
+                ucf.FriendShipStatusId
+            });
+
+        var result = await (from f in filteredUserInfo
+            join ucf in chatDbContext.TblUserChatFriends on f.UserId equals ucf.UserId into ucfGroup
+            from ucf in ucfGroup.DefaultIfEmpty()
+            join fs in friendshipStatus on ucf.FriendShipStatusId equals fs.FriendShipStatusId into fsGroup
+            from fs in fsGroup.DefaultIfEmpty()
+            join cfs in chatDbContext.TblUserChatFriendShipStatuses on fs.FriendShipStatusId equals cfs.Id into cfsGroup
+            from cfs in cfsGroup.DefaultIfEmpty()
+            where f.UserId != userId
             select new ChatUserSearchResultDto
             {
-                Id = user.UserId,
-                FirstName = user.FirstName,
-                MiddleName = user.MiddleName,
-                LastName = user.LastName,
-                ApproveStatus = result == null ? (int)FriendshipStatus.New : result.ApproveStatus,
+                Id = f.UserId,
+                FirstName = f.FirstName,
+                MiddleName = f.MiddleName,
+                LastName = f.LastName,
+                ApproveStatus = cfs == null ? 1 : cfs.ApproveStatus
             }).ToListAsync();
-                
-        
-        return finalResult;
+
+        return result;
+
     }
 }

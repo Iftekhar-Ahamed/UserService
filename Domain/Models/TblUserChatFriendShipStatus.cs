@@ -7,9 +7,7 @@ public partial class TblUserChatFriendShipStatus
 {
     public long Id { get; set; }
 
-    public int UserId { get; set; }
-
-    public int FriendId { get; set; }
+    public int ActionBy { get; set; }
 
     public short ApproveStatus { get; set; }
 

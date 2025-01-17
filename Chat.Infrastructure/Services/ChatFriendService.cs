@@ -21,9 +21,9 @@ public class ChatFriendService(
         
         if (friendShipHistory != null)
         {
-            if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Canceled)
+            if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.New)
             {
-                friendShipHistory.ApproveStatus = (int)FriendshipStatus.Requested;
+                friendShipHistory.ApproveStatus = (int)FriendshipStatus.Pending;
                 var updateResult = await chatFriendRepository.UpdateChatFriendRequestAsync(friendShipHistory);
                 
                 if (updateResult)
@@ -35,19 +35,20 @@ public class ChatFriendService(
             {
                 response.Failed("User is already your friend",true);
             }
-            else if (friendShipHistory.UserId == addFriendRequestDto.SelfUserId)
+            else if((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Pending)
+            {
+                response.Failed("Request already sent", true);
+            }
+            else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Blocked)
             {
                 response.Failed(
-                    (FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Blocked
+                    friendShipHistory.ActionBy == addFriendRequestDto.SelfUserId
                         ? "Please unblock user first"
-                        : "Request already sent", true);
+                        : "User blocked you.", true);
             }
             else
             {
-                response.Failed(
-                    (FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Blocked
-                        ? "User blocked you"
-                        : "Already user sent you a request. Please check friend request", true);
+                throw new InvalidOperationException("Something went wrong");
             }
             return response;
         }
@@ -76,7 +77,7 @@ public class ChatFriendService(
         {
             if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Pending)
             {
-                friendShipHistory.ApproveStatus = (int)FriendshipStatus.Accepted;
+                friendShipHistory.ApproveStatus = (int)FriendshipStatus.New;
                 
                 var updateResult = await chatFriendRepository.UpdateChatFriendRequestAsync(friendShipHistory);
                 
@@ -90,9 +91,9 @@ public class ChatFriendService(
                 }
                 
             }
-            else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Canceled)
+            else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.New)
             {
-                response.Failed("Already canceled",true);
+                response.Failed("Friend request already canceled",true);
             }
             else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Accepted)
             {
@@ -100,7 +101,7 @@ public class ChatFriendService(
             }
             else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Blocked)
             {
-                if (friendShipHistory.UserId == cancelFriendRequestDto.SelfUserId)
+                if (friendShipHistory.ActionBy == cancelFriendRequestDto.SelfUserId)
                 {
                     response.Failed("Please unblock user first",true);
                 }
