@@ -45,7 +45,9 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
         var matchedUsers = chatDbContext.TblUserInformations.Where
         (
             user => 
-            user.Email.Contains(searchTerm) && user.UserId != userId
+            user.Email.Contains(searchTerm) 
+            && user.UserId != userId
+            && user.IsActive == true
         )
         .Skip(pageSize * (pageNumber - 1))
         .Take(pageSize);

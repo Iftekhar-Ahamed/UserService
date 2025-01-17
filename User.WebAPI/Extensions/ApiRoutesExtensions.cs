@@ -22,6 +22,7 @@ public static class ApiRoutesExtensions
         
         app.MapGroup("api/Chat")
             .MapChatFriendMangeApis()
+            .RequireAuthorization()
             .WithTags("Chat Friend Manage API");
 
     }
