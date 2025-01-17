@@ -35,6 +35,12 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
         return await chatDbContext.SaveChangesAsync() == 1;
     }
 
+    public async Task<bool> UpdateChatFriendRequestAsync(TblUserChatFriendShipStatus updatedFriendship)
+    {
+        var res = chatDbContext.TblUserChatFriendShipStatuses.Update(updatedFriendship);
+        return await chatDbContext.SaveChangesAsync() == 1;
+    }
+
     public async Task<List<ChatUserSearchResultDto>> SearchChatUserAsync(
         string searchTerm,
         long userId,

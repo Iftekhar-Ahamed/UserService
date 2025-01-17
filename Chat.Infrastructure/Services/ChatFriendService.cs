@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using Application.DTOs.APIRequestResponseDTOs;
 using Application.Extensions.DtoExtensions;
 using Application.Helpers.BasicDataHelpers;
@@ -6,7 +5,6 @@ using Chat.Core.DTOs.UserChatFriendDTOs;
 using Chat.Core.Interfaces;
 using Domain.Enums;
 using Domain.Interfaces.ChatRepositories;
-using Domain.Interfaces.UserRepositories;
 
 namespace Chat.Infrastructure.Services;
 
@@ -23,7 +21,17 @@ public class ChatFriendService(
         
         if (friendShipHistory != null)
         {
-            if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Accepted)
+            if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Canceled)
+            {
+                friendShipHistory.ApproveStatus = (int)FriendshipStatus.Requested;
+                var updateResult = await chatFriendRepository.UpdateChatFriendRequestAsync(friendShipHistory);
+                
+                if (updateResult)
+                {
+                    response.Success("Request send",true);
+                }
+            }
+            else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Accepted)
             {
                 response.Failed("User is already your friend",true);
             }

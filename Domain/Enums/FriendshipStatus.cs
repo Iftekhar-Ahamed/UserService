@@ -8,4 +8,5 @@ public enum FriendshipStatus
     Accepted = 3,
     Blocked = 4,
     Requested = 5,
+    Canceled = 6,
 }
