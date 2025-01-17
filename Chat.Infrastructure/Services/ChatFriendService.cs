@@ -64,7 +64,64 @@ public class ChatFriendService(
         
         return response;
     }
-
+    
+    public async Task<ApiResponseDto<string>> CancelChatFriendRequest(CancelFriendRequestDto cancelFriendRequestDto)
+    {
+        var response = new ApiResponseDto<string>();
+        
+        var friendShipHistory = await chatFriendRepository.GetFriendshipAsync(cancelFriendRequestDto.SelfUserId,
+            cancelFriendRequestDto.RequestedUserId);
+        
+        if (friendShipHistory != null)
+        {
+            if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Pending)
+            {
+                friendShipHistory.ApproveStatus = (int)FriendshipStatus.Accepted;
+                
+                var updateResult = await chatFriendRepository.UpdateChatFriendRequestAsync(friendShipHistory);
+                
+                if (updateResult)
+                {
+                    response.Success("Friend request canceled",true);
+                }
+                else
+                {
+                    response.Failed("Failed to cancel request",true);
+                }
+                
+            }
+            else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Canceled)
+            {
+                response.Failed("Already canceled",true);
+            }
+            else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Accepted)
+            {
+                response.Failed("User is already your friend",true);
+            }
+            else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Blocked)
+            {
+                if (friendShipHistory.UserId == cancelFriendRequestDto.SelfUserId)
+                {
+                    response.Failed("Please unblock user first",true);
+                }
+                else
+                {
+                    response.Failed("User blocked you",true);
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Something went wrong");
+            }
+        }
+        else
+        {
+            throw new InvalidOperationException("Something went wrong");
+        }
+        
+        return response;
+    }
+    
     public async Task<ApiResponseDto<List<SearchChatUserResultResponseDto>>> SearchChatUser(
         string searchTerm,
         long userId,

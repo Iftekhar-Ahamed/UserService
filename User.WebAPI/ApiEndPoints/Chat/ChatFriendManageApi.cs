@@ -13,6 +13,9 @@ public static class ChatFriendManageApi
         groups.MapPost("/SentChatFriendRequest",SentChatFriendRequest)
             .AddEndpointFilter<ValidateModelFilter<AddNewChatFriendRequestDto>>()
             .Accepts<AddNewChatFriendRequestDto>("application/json");
+        groups.MapPost("/CancelChatFriendRequest",CancelChatFriendRequest)
+            .AddEndpointFilter<ValidateModelFilter<CancelFriendRequestDto>>()
+            .Accepts<CancelFriendRequestDto>("application/json");
         
         groups.MapGet("SearchChatUser/SearchTerm={searchTerm}&PageNo={pageNo}&PageSize={pageSize}", SearchChatUser);
         return groups;
@@ -21,6 +24,18 @@ public static class ChatFriendManageApi
     private  static async Task<IResult> SentChatFriendRequest(IChatFriendService chatFriendService, AddNewChatFriendRequestDto request)
     {
         var result = await chatFriendService.SentChatFriendRequest(request);
+
+        if (result.Success)
+        {
+            return TypedResults.Ok(result);
+        }
+        
+        return TypedResults.BadRequest(result);
+    }
+    
+    private  static async Task<IResult> CancelChatFriendRequest(IChatFriendService chatFriendService, CancelFriendRequestDto request)
+    {
+        var result = await chatFriendService.CancelChatFriendRequest(request);
 
         if (result.Success)
         {
