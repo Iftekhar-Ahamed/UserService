@@ -89,42 +89,43 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
         int pageSize
     )
     {
-        var filteredUserInfo = chatDbContext.TblUserInformations
-            .Where(u => u.Email.Contains(searchTerm) && u.IsActive == true)
-            .Skip(0) 
-            .Take(10) 
-            .Select(u => new
+        var query = 
+            from user in chatDbContext.TblUserInformations
+            where user.Email.Contains(searchTerm) &&
+                  user.IsActive == true &&
+                  user.UserId != userId
+            orderby user.UserId
+            select new
             {
-                u.UserId,
-                u.FirstName,
-                u.MiddleName,
-                u.LastName
-            });
-
-        var friendshipStatus = chatDbContext.TblUserChatFriends
-            .Where(ucf => ucf.UserId == userId)
-            .Select(ucf => new
-            {
-                ucf.UserId,
-                ucf.FriendShipStatusId
-            });
-
-        var result = await (from f in filteredUserInfo
-            join ucf in chatDbContext.TblUserChatFriends on f.UserId equals ucf.UserId into ucfGroup
-            from ucf in ucfGroup.DefaultIfEmpty()
-            join fs in friendshipStatus on ucf.FriendShipStatusId equals fs.FriendShipStatusId into fsGroup
-            from fs in fsGroup.DefaultIfEmpty()
-            join cfs in chatDbContext.TblUserChatFriendShipStatuses on fs.FriendShipStatusId equals cfs.Id into cfsGroup
-            from cfs in cfsGroup.DefaultIfEmpty()
-            where f.UserId != userId
+                user.UserId,
+                user.FirstName,
+                user.MiddleName,
+                user.LastName
+            } into filteredUsers
+            from friendStatus in
+                (from t1 in chatDbContext.TblUserChatFriends
+                    join t2 in chatDbContext.TblUserChatFriends
+                        on t1.FriendShipStatusId equals t2.FriendShipStatusId
+                    where t1.UserId == userId && t1.UserId != t2.UserId
+                    select new
+                    {
+                        t2.UserId,
+                        t2.FriendShipStatusId
+                    }).Where(ufs => ufs.UserId == filteredUsers.UserId)
+                .DefaultIfEmpty()
+            from friendshipStatus in chatDbContext.TblUserChatFriendShipStatuses
+                .Where(fs => fs.Id == friendStatus.FriendShipStatusId)
+                .DefaultIfEmpty()
             select new ChatUserSearchResultDto
             {
-                Id = f.UserId,
-                FirstName = f.FirstName,
-                MiddleName = f.MiddleName,
-                LastName = f.LastName,
-                ApproveStatus = cfs == null ? 1 : cfs.ApproveStatus
-            }).ToListAsync();
+                Id = filteredUsers.UserId,
+                FirstName = filteredUsers.FirstName,
+                MiddleName = filteredUsers.MiddleName,
+                LastName = filteredUsers.LastName,
+                ApproveStatus = friendshipStatus != null ? friendshipStatus.ApproveStatus : 1
+            };
+
+        var result = await query.ToListAsync();
 
         return result;
 
