@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Application.Helpers.EncryptionDecryptionHelper;
+namespace Application.Core.Helpers.EncryptionDecryptionHelper;
 
 public static class OneWayEncryptionHelper
 {

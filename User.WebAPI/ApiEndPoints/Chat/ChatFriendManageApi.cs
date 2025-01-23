@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Application.Extensions.CommonExtensions;
+using Application.Core.Extensions.CommonExtensions;
 using Chat.Core.DTOs.UserChatFriendDTOs;
 using Chat.Core.Interfaces;
 using UserService.EndPointFilters;

@@ -1,4 +1,4 @@
-using Application.DTOs.APIRequestResponseDTOs;
+using Application.Core.DTOs.APIRequestResponseDTOs;
 using FluentValidation;
 
 namespace UserService.EndPointFilters;

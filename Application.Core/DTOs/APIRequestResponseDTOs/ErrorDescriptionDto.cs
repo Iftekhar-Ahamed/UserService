@@ -1,4 +1,4 @@
-namespace Application.DTOs.APIRequestResponseDTOs;
+namespace Application.Core.DTOs.APIRequestResponseDTOs;
 
 public class ErrorDescriptionDto
 {

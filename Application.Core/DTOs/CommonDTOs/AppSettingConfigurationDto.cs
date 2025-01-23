@@ -1,4 +1,4 @@
-namespace Application.DTOs.CommonDTOs;
+namespace Application.Core.DTOs.CommonDTOs;
 
 public class AppSettingConfigurationDto
 {

@@ -1,6 +1,6 @@
-using Application.Helpers.BasicDataHelpers;
+using Application.Core.Helpers.BasicDataHelpers;
 
-namespace Application.Helpers.FileHelpers;
+namespace Application.Core.Helpers.FileHelpers;
 
 public static class JsonFileReaderHelper
 {

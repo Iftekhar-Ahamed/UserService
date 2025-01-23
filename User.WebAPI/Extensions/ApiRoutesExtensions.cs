@@ -9,7 +9,7 @@ public static class ApiRoutesExtensions
     {
         app.MapGroup("api/User")
             .MapUserPublicApis()
-            .WithTags("User Public API");
+            .WithTags("User API Public");
         
         app.MapGroup("api/User")
             .MapUserApis()

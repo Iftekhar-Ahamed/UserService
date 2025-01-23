@@ -1,4 +1,4 @@
-using Application.Helpers.BasicDataHelpers;
+using Application.Core.Helpers.BasicDataHelpers;
 using Domain.Interfaces.UserRepositories;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;

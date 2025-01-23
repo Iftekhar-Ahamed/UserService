@@ -1,6 +1,6 @@
-using Application.DTOs.APIRequestResponseDTOs;
+using Application.Core.DTOs.APIRequestResponseDTOs;
 
-namespace Application.Extensions.DtoExtensions;
+namespace Application.Core.Extensions.DtoExtensions;
 
 public static class ApiRequestResponseExtensions
 {

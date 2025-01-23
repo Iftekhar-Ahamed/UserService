@@ -1,7 +1,7 @@
-using Application.DTOs.APIRequestResponseDTOs;
-using Application.Extensions.DtoExtensions;
-using Application.Helpers.BasicDataHelpers;
-using Application.Helpers.EncryptionDecryptionHelper;
+using Application.Core.DTOs.APIRequestResponseDTOs;
+using Application.Core.Extensions.DtoExtensions;
+using Application.Core.Helpers.BasicDataHelpers;
+using Application.Core.Helpers.EncryptionDecryptionHelper;
 using Domain.Interfaces.UserRepositories;
 using Domain.Models;
 using User.Core.DTOs.UserDTOs;

@@ -1,4 +1,4 @@
-namespace Application.Enums;
+namespace Application.Core.Enums;
 
 public enum TokenType
 {

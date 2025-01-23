@@ -1,4 +1,4 @@
-using Application.DTOs.APIRequestResponseDTOs;
+using Application.Core.DTOs.APIRequestResponseDTOs;
 using User.Core.DTOs.UserDTOs;
 
 namespace User.Core.Interfaces;

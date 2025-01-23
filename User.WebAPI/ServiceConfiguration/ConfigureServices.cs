@@ -1,5 +1,5 @@
+using Application.Core.Interfaces;
 using Application.Infrastructure.Services;
-using Application.Interfaces;
 using Chat.Core.Interfaces;
 using Chat.Core.Validations.ChatFriendManageValidations;
 using Chat.Infrastructure.Repositories;

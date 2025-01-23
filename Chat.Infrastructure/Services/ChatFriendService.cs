@@ -1,6 +1,6 @@
-using Application.DTOs.APIRequestResponseDTOs;
-using Application.Extensions.DtoExtensions;
-using Application.Helpers.BasicDataHelpers;
+using Application.Core.DTOs.APIRequestResponseDTOs;
+using Application.Core.Extensions.DtoExtensions;
+using Application.Core.Helpers.BasicDataHelpers;
 using Chat.Core.DTOs.UserChatFriendDTOs;
 using Chat.Core.Interfaces;
 using Domain.Enums;

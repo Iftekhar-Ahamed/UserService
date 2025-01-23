@@ -1,5 +1,5 @@
-using Application.DTOs.APIRequestResponseDTOs;
-using Application.Helpers.BasicDataHelpers;
+using Application.Core.DTOs.APIRequestResponseDTOs;
+using Application.Core.Helpers.BasicDataHelpers;
 
 namespace UserService.Middlewares;
 

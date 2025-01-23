@@ -1,6 +1,6 @@
-using Application.DTOs.CommonDTOs;
-using Application.Helpers.FileHelpers;
-using Application.Interfaces;
+using Application.Core.DTOs.CommonDTOs;
+using Application.Core.Helpers.FileHelpers;
+using Application.Core.Interfaces;
 
 namespace Application.Infrastructure.Services;
 

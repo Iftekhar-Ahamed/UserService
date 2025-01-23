@@ -1,4 +1,4 @@
-using Application.Extensions.CommonExtensions;
+using Application.Core.Extensions.CommonExtensions;
 using User.Core.DTOs.UserDTOs;
 using User.Core.Interfaces;
 using UserService.EndPointFilters;

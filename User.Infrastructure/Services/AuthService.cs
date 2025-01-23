@@ -1,10 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Application.DTOs.APIRequestResponseDTOs;
-using Application.Extensions.DtoExtensions;
-using Application.Helpers.EncryptionDecryptionHelper;
-using Application.Interfaces;
+using Application.Core.DTOs.APIRequestResponseDTOs;
+using Application.Core.Extensions.DtoExtensions;
+using Application.Core.Helpers.EncryptionDecryptionHelper;
+using Application.Core.Interfaces;
 using Domain.Interfaces.UserRepositories;
 using Domain.Models;
 using Microsoft.IdentityModel.Tokens;
