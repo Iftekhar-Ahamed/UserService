@@ -1,13 +1,12 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Core.Extensions.CommonExtensions;
 
 public static class HttpContextExtension
 {
-    public static int GetUserId(this HttpContext httpContext)
+    public static int GetUserId( this ClaimsPrincipal user)
     {
-        string? userIdClaim = httpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        string? userIdClaim = user.FindFirst(ClaimTypes.Name)?.Value;
     
         if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
         {

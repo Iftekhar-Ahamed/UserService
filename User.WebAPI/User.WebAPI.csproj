@@ -18,10 +18,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Application.Infrastructure\Application.Infrastructure.csproj" />
-      <ProjectReference Include="..\Application.Core\Application.Core.csproj" />
-      <ProjectReference Include="..\Chat.Core\Chat.Core.csproj" />
       <ProjectReference Include="..\Chat.Infrastructure\Chat.Infrastructure.csproj" />
       <ProjectReference Include="..\User.Infrastructure\User.Infrastructure.csproj" />
+      <ProjectReference Include="..\Application.Core\Application.Core.csproj" />
+      <ProjectReference Include="..\Chat.Core\Chat.Core.csproj" />
     </ItemGroup>
 
 </Project>

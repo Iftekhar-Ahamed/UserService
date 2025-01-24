@@ -10,11 +10,4 @@
       <PackageReference Include="FluentValidation" Version="11.10.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-        <HintPath>..\..\..\.dotnet\packs\Microsoft.AspNetCore.App.Ref\9.0.0\ref\net9.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>

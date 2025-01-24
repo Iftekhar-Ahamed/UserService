@@ -47,7 +47,7 @@ public static class ChatFriendManageApi
     
     private static async Task<IResult> SearchChatUser(string searchTerm,[Required]int pageNo,[Required]int pageSize,IChatFriendService chatFriendService,HttpContext httpContext)
     {
-        var response = await chatFriendService.SearchChatUser(searchTerm,httpContext.GetUserId(),pageNo,pageSize);
+        var response = await chatFriendService.SearchChatUser(searchTerm,httpContext.User.GetUserId(),pageNo,pageSize);
             
         if (response.Success)
         {
