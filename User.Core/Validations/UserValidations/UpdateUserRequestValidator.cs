@@ -8,8 +8,8 @@ public class UpdateUserRequestValidator: AbstractValidator<UpdateUserRequestDto>
     public UpdateUserRequestValidator()
     {
         RuleFor(x=> x.UserId)
-            .NotNull().WithMessage("User.Infrastructure Id cannot be null")
-            .GreaterThan(0).WithMessage("User.Infrastructure Id must be greater than 0");
+            .NotNull().WithMessage("User Id cannot be null")
+            .GreaterThan(0).WithMessage("User Id must be greater than 0");
         
         RuleFor(x => x.Name)
             .NotNull().WithMessage("Name is required.")

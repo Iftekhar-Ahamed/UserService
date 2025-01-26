@@ -1,4 +1,5 @@
 using Application.Core.DTOs.APIRequestResponseDTOs;
+using Application.Core.DTOs.PaginationDTOs;
 using Application.Core.Extensions.DtoExtensions;
 using Application.Core.Helpers.BasicDataHelpers;
 using Chat.Core.DTOs.UserChatFriendDTOs;
@@ -146,5 +147,10 @@ public class ChatFriendService(
         response.Success();
         
         return response;
+    }
+
+    public Task<ApiResponseDto<List<FriendRequestDetailsDto>>> GetFriendRequests(PaginationDto<int> request)
+    {
+        throw new NotImplementedException();
     }
 }

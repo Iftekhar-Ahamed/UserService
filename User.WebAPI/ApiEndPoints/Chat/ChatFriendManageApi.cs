@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Application.Core.DTOs.PaginationDTOs;
 using Application.Core.Extensions.CommonExtensions;
 using Chat.Core.DTOs.UserChatFriendDTOs;
 using Chat.Core.Interfaces;
@@ -21,7 +22,9 @@ public static class ChatFriendManageApi
         return groups;
     }
 
-    private  static async Task<IResult> SentChatFriendRequest(IChatFriendService chatFriendService, AddNewChatFriendRequestDto request)
+    private static async Task<IResult> SentChatFriendRequest(
+        IChatFriendService chatFriendService,
+        AddNewChatFriendRequestDto request)
     {
         var result = await chatFriendService.SentChatFriendRequest(request);
 
@@ -33,7 +36,9 @@ public static class ChatFriendManageApi
         return TypedResults.BadRequest(result);
     }
     
-    private  static async Task<IResult> CancelChatFriendRequest(IChatFriendService chatFriendService, CancelFriendRequestDto request)
+    private static async Task<IResult> CancelChatFriendRequest(
+        IChatFriendService chatFriendService,
+        CancelFriendRequestDto request)
     {
         var result = await chatFriendService.CancelChatFriendRequest(request);
 
@@ -45,9 +50,26 @@ public static class ChatFriendManageApi
         return TypedResults.BadRequest(result);
     }
     
-    private static async Task<IResult> SearchChatUser(string searchTerm,[Required]int pageNo,[Required]int pageSize,IChatFriendService chatFriendService,HttpContext httpContext)
+    private static async Task<IResult> SearchChatUser(
+        string searchTerm,
+        [Required] int pageNo,
+        [Required] int pageSize,
+        IChatFriendService chatFriendService,
+        HttpContext httpContext)
     {
         var response = await chatFriendService.SearchChatUser(searchTerm,httpContext.User.GetUserId(),pageNo,pageSize);
+            
+        if (response.Success)
+        {
+            return TypedResults.Ok(response);
+        }
+        
+        return TypedResults.BadRequest(response);
+    }
+
+    private static async Task<IResult> GetFriendRequests(PaginationDto<int> parameters,IChatFriendService chatFriendService, HttpContext httpContext)
+    {
+        var response = await chatFriendService.GetFriendRequests(parameters);
             
         if (response.Success)
         {
