@@ -1,3 +1,4 @@
+using Application.Core.DTOs.PaginationDTOs;
 using Domain.DTOs;
 using Domain.Models;
 
@@ -14,4 +15,5 @@ public interface IChatFriendRepository
         int pageNumber,
         int pageSize
     );
+    Task<List<FriendRequestDetailsDto>> GetFriendRequestsAsync(PaginationDto<long> requestData);
 }

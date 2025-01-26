@@ -1,3 +1,4 @@
+using Application.Core.DTOs.PaginationDTOs;
 using Domain.DTOs;
 using Domain.Enums;
 using Domain.Interfaces.ChatRepositories;
@@ -129,5 +130,21 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
 
         return result;
 
+    }
+
+    public async Task<List<FriendRequestDetailsDto>> GetFriendRequestsAsync(PaginationDto<long> requestData)
+    {
+        var friendRequestDetails = await (from userChatList in chatDbContext.TblUserChatFriends
+            join friendshipStatus in chatDbContext.TblUserChatFriendShipStatuses
+                on userChatList.FriendShipStatusId equals friendshipStatus.Id
+            where userChatList.UserId == requestData.Data
+                && friendshipStatus.ApproveStatus == (int)FriendshipStatus.Pending
+            select new FriendRequestDetailsDto
+            {
+                ChatId = userChatList.FriendShipStatusId,
+                FriendshipStatus = (FriendshipStatus)friendshipStatus.ApproveStatus,
+            }).ToListAsync();
+        
+        return friendRequestDetails;
     }
 }
