@@ -19,6 +19,7 @@ public static class ChatFriendManageApi
             .Accepts<CancelFriendRequestDto>("application/json");
         
         groups.MapGet("SearchChatUser/SearchTerm={searchTerm}&PageNo={pageNo}&PageSize={pageSize}", SearchChatUser);
+        groups.MapPost("GetFriendRequest", GetFriendRequests);
         return groups;
     }
 
@@ -67,7 +68,7 @@ public static class ChatFriendManageApi
         return TypedResults.BadRequest(response);
     }
 
-    private static async Task<IResult> GetFriendRequests(PaginationDto<int> parameters,IChatFriendService chatFriendService, HttpContext httpContext)
+    private static async Task<IResult> GetFriendRequests(PaginationDto<long> parameters,IChatFriendService chatFriendService, HttpContext httpContext)
     {
         var response = await chatFriendService.GetFriendRequests(parameters);
             

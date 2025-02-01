@@ -6,6 +6,7 @@ using Chat.Core.DTOs.UserChatFriendDTOs;
 using Chat.Core.Interfaces;
 using Domain.Enums;
 using Domain.Interfaces.ChatRepositories;
+using User.Core.DTOs.UserDTOs;
 
 namespace Chat.Infrastructure.Services;
 
@@ -38,7 +39,7 @@ public class ChatFriendService(
             }
             else if((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Pending)
             {
-                response.Failed("Request already sent", true);
+                response.Failed((friendShipHistory.ActionBy == addFriendRequestDto.SelfUserId ? "Request already sent":"Please refresh. User already sent a request."), true);
             }
             else if ((FriendshipStatus)friendShipHistory.ApproveStatus == FriendshipStatus.Blocked)
             {
@@ -140,7 +141,7 @@ public class ChatFriendService(
          Id   = result.Id,
          Name = DataAggregatorHelper.CombineNames([result.FirstName, result.MiddleName, result.LastName]),
          Avatar = "avatar.jpeg",
-         FriendshipStatus = result.ApproveStatus,
+         FriendshipStatus = (result.ApproveStatus == (int)FriendshipStatus.Pending ? (int)(result.ActionBy == userId ? FriendshipStatus.Pending : FriendshipStatus.Requested) :result.ApproveStatus),
         }).ToList();
         
         response.Data = processedResponse;
@@ -149,8 +150,36 @@ public class ChatFriendService(
         return response;
     }
 
-    public Task<ApiResponseDto<List<FriendRequestDetailsDto>>> GetFriendRequests(PaginationDto<int> request)
+    public async Task<ApiResponseDto<List<FriendRequestDetailsDto>>> GetFriendRequests(PaginationDto<long> request)
     {
-        throw new NotImplementedException();
+        var response = new ApiResponseDto<List<FriendRequestDetailsDto>>();
+        
+        var chatFriendRequests = await chatFriendRepository.GetFriendRequestsAsync(request);
+
+        if (chatFriendRequests.Any())
+        {
+            var data = chatFriendRequests.Select(tcf => new FriendRequestDetailsDto()
+            {
+                ChatId = tcf.ChatId,
+                ImageUrl = tcf.ImageUrl,
+                Name = new NameElementDto
+                {
+                    Title = "",
+                    FirstName = tcf.FirstName,
+                    LastName = tcf.LastName,
+                    MiddleName = tcf.MiddleName,
+                },
+                FriendshipStatus = (FriendshipStatus)tcf.FriendshipStatus
+            }).ToList();
+
+            response.Data = data;
+            response.Success();
+        }
+        else
+        {
+            response.Failed("Currently you no friend requests",true);
+        }
+
+        return response;
     }
 }

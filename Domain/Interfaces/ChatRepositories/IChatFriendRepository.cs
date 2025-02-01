@@ -1,6 +1,6 @@
 using Application.Core.DTOs.PaginationDTOs;
-using Domain.DTOs;
 using Domain.Models;
+using Domain.ViewModels;
 
 namespace Domain.Interfaces.ChatRepositories;
 
@@ -9,11 +9,11 @@ public interface IChatFriendRepository
     Task<TblUserChatFriendShipStatus?>GetFriendshipAsync(long selfUserId, long friendUserId);
     Task<bool>AddChatFriendRequestAsync(long selfUserId, long friendUserId);
     Task<bool> UpdateChatFriendRequestAsync(TblUserChatFriendShipStatus updatedFriendship);
-    Task<List<ChatUserSearchResultDto>>SearchChatUserAsync(
+    Task<List<ChatUserSearchResultViewModel>>SearchChatUserAsync(
         string searchTerm,
         long userId,
         int pageNumber,
         int pageSize
     );
-    Task<List<FriendRequestDetailsDto>> GetFriendRequestsAsync(PaginationDto<long> requestData);
+    Task<List<FriendRequestViewModel>>  GetFriendRequestsAsync(PaginationDto<long> requestData);
 }

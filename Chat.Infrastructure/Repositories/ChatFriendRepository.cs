@@ -1,9 +1,10 @@
 using Application.Core.DTOs.PaginationDTOs;
-using Domain.DTOs;
 using Domain.Enums;
 using Domain.Interfaces.ChatRepositories;
 using Domain.Models;
+using Domain.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Chat.Infrastructure.Repositories;
 
@@ -83,7 +84,7 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
         return await chatDbContext.SaveChangesAsync() == 1;
     }
 
-    public async Task<List<ChatUserSearchResultDto>> SearchChatUserAsync(
+    public async Task<List<ChatUserSearchResultViewModel>> SearchChatUserAsync(
         string searchTerm,
         long userId,
         int pageNumber,
@@ -115,14 +116,15 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
                     }).Where(ufs => ufs.UserId == filteredUsers.UserId)
                 .DefaultIfEmpty()
             from friendshipStatus in chatDbContext.TblUserChatFriendShipStatuses
-                .Where(fs => fs.Id == friendStatus.FriendShipStatusId)
+                .Where(fs => fs.Id == friendStatus.FriendShipStatusId && fs.ApproveStatus == (int)FriendshipStatus.Pending)
                 .DefaultIfEmpty()
-            select new ChatUserSearchResultDto
+            select new ChatUserSearchResultViewModel
             {
                 Id = filteredUsers.UserId,
                 FirstName = filteredUsers.FirstName,
                 MiddleName = filteredUsers.MiddleName,
                 LastName = filteredUsers.LastName,
+                ActionBy = friendshipStatus == null ? -1 : friendshipStatus.ActionBy,
                 ApproveStatus = friendshipStatus != null ? friendshipStatus.ApproveStatus : 1
             };
 
@@ -132,19 +134,27 @@ public class ChatFriendRepository(ChatDbContext chatDbContext) : IChatFriendRepo
 
     }
 
-    public async Task<List<FriendRequestDetailsDto>> GetFriendRequestsAsync(PaginationDto<long> requestData)
+    public async Task<List<FriendRequestViewModel>> GetFriendRequestsAsync(PaginationDto<long> requestData)
     {
-        var friendRequestDetails = await (from userChatList in chatDbContext.TblUserChatFriends
-            join friendshipStatus in chatDbContext.TblUserChatFriendShipStatuses
-                on userChatList.FriendShipStatusId equals friendshipStatus.Id
-            where userChatList.UserId == requestData.Data
-                && friendshipStatus.ApproveStatus == (int)FriendshipStatus.Pending
-            select new FriendRequestDetailsDto
-            {
-                ChatId = userChatList.FriendShipStatusId,
-                FriendshipStatus = (FriendshipStatus)friendshipStatus.ApproveStatus,
-            }).ToListAsync();
+        var chatLists = chatDbContext.TblUserChatFriends
+            .Where(user => user.UserId == requestData.Data && user.FriendShipStatus.ApproveStatus == (int)FriendshipStatus.Pending)
+            .Skip(requestData.PageNo * requestData.PageSize)
+            .Take(requestData.PageSize);
         
-        return friendRequestDetails;
+        var friendRequestDetails = from chat in chatLists
+                join tcf in chatDbContext.TblUserChatFriends
+                    on chat.FriendShipStatusId equals tcf.FriendShipStatusId 
+                where tcf.UserId != requestData.Data
+                    select new FriendRequestViewModel
+                    {
+                        ChatId = tcf.Id,
+                        FirstName = tcf.User.FirstName,
+                        MiddleName = tcf.User.MiddleName,
+                        LastName = tcf.User.LastName,
+                        ImageUrl = "",
+                        FriendshipStatus = tcf.FriendShipStatus.ApproveStatus,
+                    };
+        
+        return await friendRequestDetails.ToListAsync();
     }
 }
